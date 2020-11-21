@@ -1,13 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:phonetheft/pages/home.dart';
+import 'package:phonetheft/pages/wrapper.dart';
 import 'package:phonetheft/pages/settings.dart';
-void main() {
+import 'package:android_alarm_manager/android_alarm_manager.dart';
+void main() async {
+  await AndroidAlarmManager.initialize();
+  await AndroidAlarmManager.periodic(Duration(seconds: 10), 0, callBack);
+
   runApp(MaterialApp(
     title: 'Anti Phone Theft',
     routes: {
-      '/': (context) => PhoneTheft(),
+      '/': (context) => Wrapper(),
       '/settings': (context) => Settings(),
     },
   ));
+}
+
+
+void callBack () {
+  print('HI BACKGROUND SERVICES');
 }

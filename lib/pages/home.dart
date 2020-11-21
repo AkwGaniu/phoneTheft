@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:phonetheft/shared/userSettings.dart';
+import 'package:phonetheft/services/alert.dart';
+import 'package:phonetheft/services/custom_code.dart';
 
-class PhoneTheft extends StatelessWidget {
+class PhoneTheft extends StatefulWidget {
+  @override
+  _PhoneTheftState createState() => _PhoneTheftState();
+}
+
+class _PhoneTheftState extends State<PhoneTheft> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey [100],
+      backgroundColor: Colors.grey[100],
       appBar: AppBar(
         backgroundColor: Colors.purple[400],
+        title: Text('Anti Phone Theft'),
         actions: <Widget>[
           IconButton(
             tooltip: 'Settings',
@@ -16,7 +25,6 @@ class PhoneTheft extends StatelessWidget {
             icon: Icon(Icons.settings),
           ),
         ],
-        title: Text('Anti Phone Theft'),
       ),
 
       body: SnackBarWidget(),
@@ -25,7 +33,14 @@ class PhoneTheft extends StatelessWidget {
 }
 
 
-class SnackBarWidget extends StatelessWidget {
+
+class SnackBarWidget extends StatefulWidget {
+  @override
+  _SnackBarWidgetState createState() => _SnackBarWidgetState();
+}
+
+class _SnackBarWidgetState extends State<SnackBarWidget> {
+  bool correctPass = false;
   returnSnackBar(msg) {
     final snackBar = SnackBar(
       content: Text(
@@ -33,7 +48,7 @@ class SnackBarWidget extends StatelessWidget {
         style: TextStyle(
           color: Colors.white70,
           fontSize: 20.0
-      ),
+        ),
       ),
       backgroundColor: Colors.purple[400],
       duration: Duration(seconds: 5),
@@ -44,15 +59,14 @@ class SnackBarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TextStyle textStyle = TextStyle(
-        fontSize: 20.0,
-        fontWeight: FontWeight.bold,
-        letterSpacing: 1.0,
-        color: Colors.purple[300]
+      fontSize: 20.0,
+      fontWeight: FontWeight.bold,
+      letterSpacing: 1.0,
+      color: Colors.purple[300]
     );
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
       child: Column(
-//      mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Text(
@@ -61,9 +75,6 @@ class SnackBarWidget extends StatelessWidget {
           ),
           ListTile(
             contentPadding: EdgeInsets.zero,
-            onTap: (){
-
-            },
             leading: Icon(
               Icons.phone_android,
               color: Colors.purple[500],
@@ -72,15 +83,23 @@ class SnackBarWidget extends StatelessWidget {
             title: Text(
               'Motion Detection Mode',
               style: TextStyle(
-                  color: Colors.purple[400]
+                color: Colors.purple[400]
               ),
             ),
             subtitle: Text(
-              'Raise alarm when our phone is move',
+              watchOn ? 'Motion detection activated' :'Raise alarm when phone move',
               style: TextStyle(
                 color: Colors.purple[200],
               ),
             ),
+            onTap: () async {
+              showDialog(
+                context: context,
+                builder: (_) {
+                  return MyDialog();
+                });
+              detectMovement(user.detectDelay);
+            },
           ),
           Divider(
             height: 20.0,

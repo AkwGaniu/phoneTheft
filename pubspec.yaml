@@ -23,6 +23,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  sensors: ^0.4.2+4
+  flutter_spinkit: ^4.1.2+1
+  shared_preferences: ^0.5.12
+  android_alarm_manager: ^0.4.5+17
+  http: ^0.12.0+2
+  android_intent: ^0.3.0+2
 
 
   # The following adds the Cupertino Icons font to your application.
