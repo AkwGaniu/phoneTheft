@@ -3,8 +3,8 @@ import 'package:sensors/sensors.dart';
 
 
 // DETECT MOVEMENT AND TRIGGER ALLARM
-void detectMovement(graceTime) {
-  Future.delayed(Duration(seconds: graceTime * 2), () async {
+void detectMovement() async {
+  // Future.delayed(Duration(seconds: graceTime * 2), () async {
     StreamSubscription _accelSubscription;
     void _stopAccelerometer() {
       if (_accelSubscription == null) return;
@@ -23,6 +23,6 @@ void detectMovement(graceTime) {
       }
     });
     print('detector started');
-  });
+  // });
 }
 

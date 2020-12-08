@@ -1,7 +1,17 @@
+import 'dart:io';
+import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:audioplayer/audioplayer.dart';
+// import 'package:phonetheft/services/custom_code.dart';
+// import 'package:flutter/services.dart';
+// import 'package:just_audio/just_audio.dart';
 import 'package:phonetheft/shared/userSettings.dart';
 import 'package:phonetheft/services/alert.dart';
-import 'package:phonetheft/services/custom_code.dart';
+import 'dart:async';
+import 'package:sensors/sensors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PhoneTheft extends StatefulWidget {
   @override
@@ -11,6 +21,7 @@ class PhoneTheft extends StatefulWidget {
 class _PhoneTheftState extends State<PhoneTheft> {
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
@@ -32,8 +43,6 @@ class _PhoneTheftState extends State<PhoneTheft> {
   }
 }
 
-
-
 class SnackBarWidget extends StatefulWidget {
   @override
   _SnackBarWidgetState createState() => _SnackBarWidgetState();
@@ -41,6 +50,8 @@ class SnackBarWidget extends StatefulWidget {
 
 class _SnackBarWidgetState extends State<SnackBarWidget> {
   bool correctPass = false;
+  String mp3Uri = '';
+
   returnSnackBar(msg) {
     final snackBar = SnackBar(
       content: Text(
@@ -54,6 +65,22 @@ class _SnackBarWidgetState extends State<SnackBarWidget> {
       duration: Duration(seconds: 5),
     );
     return snackBar;
+  }
+
+  void _loadAlarmSoundFile() async {
+    final ByteData data = await rootBundle.load('assets/PoliceSirene.mp3');
+    Directory tempDir = await getTemporaryDirectory();
+    File tempFile = File('${tempDir.path}/PoliceSirene.mp3');
+    await tempFile.writeAsBytes(data.buffer.asUint8List(), flush: true);
+    SharedPreferences mp3Uri = await SharedPreferences.getInstance();
+    await mp3Uri.setString('mp3Uri', tempFile.uri.toString());
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAlarmSoundFile();
   }
 
   @override
@@ -98,7 +125,7 @@ class _SnackBarWidgetState extends State<SnackBarWidget> {
                 builder: (_) {
                   return MyDialog();
                 });
-              detectMovement(user.detectDelay);
+              await AndroidAlarmManager.oneShot(Duration(seconds: 10), 0, detectMovement);
             },
           ),
           Divider(
@@ -176,4 +203,34 @@ class _SnackBarWidgetState extends State<SnackBarWidget> {
       ),
     );
   }
+}
+
+
+  void _playAlarm() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String mp3Uri =  pref.getString('mp3Uri');
+    AudioPlayer player = AudioPlayer();
+    player.play(mp3Uri, isLocal: true);
+    print('playing....');
+  }
+
+// DETECT MOVEMENT AND TRIGGER ALLARM
+void detectMovement() async {
+  // Future.delayed(Duration(seconds: graceTime * 2), () async {
+  StreamSubscription _accelSubscription;
+  void _stopAccelerometer() {
+    if (_accelSubscription == null) return;
+    _accelSubscription.cancel();
+    _accelSubscription = null;
+  }
+  _accelSubscription = accelerometerEvents.listen((AccelerometerEvent event) {
+    if (event.x < -0.1) {
+      print(event);
+      _stopAccelerometer();
+      // TRIGGER THE ALARM HERE
+      _playAlarm();
+      print("Phone was shaked ACCELERO USER");
+    }
+  });
+  print('detector started');
 }
