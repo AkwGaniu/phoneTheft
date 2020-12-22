@@ -6,7 +6,7 @@ import io.flutter.plugins.androidalarmmanager.AndroidAlarmManagerPlugin;
 
 @SuppressWarnings("deprecation")
 public class Application extends FlutterApplication
-    implements io.flutter.plugin.common.PluginRegistry.PluginRegistrantCallback {
+  implements io.flutter.plugin.common.PluginRegistry.PluginRegistrantCallback {
   @Override
   public void onCreate() {
     super.onCreate();
@@ -17,6 +17,7 @@ public class Application extends FlutterApplication
   @SuppressWarnings("deprecation")
   public void registerWith(io.flutter.plugin.common.PluginRegistry registry) {
     AndroidAlarmManagerPlugin.registerWith(
-        registry.registrarFor("io.flutter.plugins.androidalarmmanager.AndroidAlarmManagerPlugin"));
+      registry.registrarFor("io.flutter.plugins.androidalarmmanager.AndroidAlarmManagerPlugin")
+    );
   }
 }

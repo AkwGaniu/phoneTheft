@@ -116,7 +116,6 @@ class _SettingsDialogState extends State<SettingsDialog> {
               onChanged: (int value) {
                 setState(() {
                   user.alarmDelay = value;
-                  print(user.alarmDelay);
                 });
               },
             ),
@@ -129,7 +128,6 @@ class _SettingsDialogState extends State<SettingsDialog> {
               onChanged: (int value) {
                 setState(() {
                   user.alarmDelay = value;
-                  print(user.alarmDelay);
                 });
               },
             ),
@@ -142,7 +140,6 @@ class _SettingsDialogState extends State<SettingsDialog> {
               onChanged: (int value) {
                 setState(() {
                   user.alarmDelay = value;
-                  print(user.alarmDelay);
                 });
               },
             ),
@@ -155,7 +152,6 @@ class _SettingsDialogState extends State<SettingsDialog> {
               onChanged: (int value) {
                 setState(() {
                   user.alarmDelay = value;
-                  print(user.alarmDelay);
                 });
               },
             ),
@@ -168,7 +164,6 @@ class _SettingsDialogState extends State<SettingsDialog> {
               onChanged: (int value) {
                 setState(() {
                   user.alarmDelay = value;
-                  print(user.alarmDelay);
                 });
               },
             ),
@@ -181,7 +176,6 @@ class _SettingsDialogState extends State<SettingsDialog> {
               onChanged: (int value) {
                 setState(() {
                   user.alarmDelay = value;
-                  print(user.alarmDelay);
                 });
               },
             ),
@@ -213,7 +207,6 @@ class _SettingsDialogState extends State<SettingsDialog> {
               onChanged: (int value) {
                 setState(() {
                   user.detectDelay = value;
-                  print(user.detectDelay);
                 });
               },
             ),
@@ -226,7 +219,6 @@ class _SettingsDialogState extends State<SettingsDialog> {
               onChanged: (int value) {
                 setState(() {
                   user.detectDelay = value;
-                  print(user.detectDelay);
                 });
               },
             ),

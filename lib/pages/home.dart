@@ -1,17 +1,18 @@
-import 'dart:io';
+import 'dart:async';
 import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/services.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:audioplayer/audioplayer.dart';
-// import 'package:phonetheft/services/custom_code.dart';
-// import 'package:flutter/services.dart';
-// import 'package:just_audio/just_audio.dart';
+import 'package:phonetheft/pages/auth/authenticate.dart';
 import 'package:phonetheft/shared/userSettings.dart';
 import 'package:phonetheft/services/alert.dart';
-import 'dart:async';
 import 'package:sensors/sensors.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:local_auth/local_auth.dart';
+
+
+String name = 'some name';  AudioCache player = AudioCache();
+AudioPlayer currentAudioLoop;
 
 class PhoneTheft extends StatefulWidget {
   @override
@@ -19,6 +20,8 @@ class PhoneTheft extends StatefulWidget {
 }
 
 class _PhoneTheftState extends State<PhoneTheft> {
+
+
   @override
   Widget build(BuildContext context) {
 
@@ -44,13 +47,13 @@ class _PhoneTheftState extends State<PhoneTheft> {
 }
 
 class SnackBarWidget extends StatefulWidget {
+
   @override
   _SnackBarWidgetState createState() => _SnackBarWidgetState();
 }
 
 class _SnackBarWidgetState extends State<SnackBarWidget> {
   bool correctPass = false;
-  String mp3Uri = '';
 
   returnSnackBar(msg) {
     final snackBar = SnackBar(
@@ -67,24 +70,15 @@ class _SnackBarWidgetState extends State<SnackBarWidget> {
     return snackBar;
   }
 
-  void _loadAlarmSoundFile() async {
-    final ByteData data = await rootBundle.load('assets/PoliceSirene.mp3');
-    Directory tempDir = await getTemporaryDirectory();
-    File tempFile = File('${tempDir.path}/PoliceSirene.mp3');
-    await tempFile.writeAsBytes(data.buffer.asUint8List(), flush: true);
-    SharedPreferences mp3Uri = await SharedPreferences.getInstance();
-    await mp3Uri.setString('mp3Uri', tempFile.uri.toString());
-  }
-
-
   @override
   void initState() {
     super.initState();
-    _loadAlarmSoundFile();
+    // _authenticateUser();
   }
 
   @override
   Widget build(BuildContext context) {
+
     TextStyle textStyle = TextStyle(
       fontSize: 20.0,
       fontWeight: FontWeight.bold,
@@ -114,18 +108,21 @@ class _SnackBarWidgetState extends State<SnackBarWidget> {
               ),
             ),
             subtitle: Text(
-              watchOn ? 'Motion detection activated' :'Raise alarm when phone move',
+              watchOn ? 'Motion detection activated' : 'Raise alarm when phone moves',
               style: TextStyle(
                 color: Colors.purple[200],
               ),
             ),
             onTap: () async {
+              int graceTime = user.detectDelay;
               showDialog(
                 context: context,
                 builder: (_) {
                   return MyDialog();
-                });
-              await AndroidAlarmManager.oneShot(Duration(seconds: 10), 0, detectMovement);
+                }
+              );
+              detectMovement(graceTime);
+              // await AndroidAlarmManager.oneShot(Duration(seconds: 2), 0, _authenticateUser);
             },
           ),
           Divider(
@@ -161,39 +158,39 @@ class _SnackBarWidgetState extends State<SnackBarWidget> {
               ),
             ),
           ),
-          Divider(
-            height: 20.0,
-            color: Colors.grey[900],
-          ),
-          Text(
-            'PROXIMITY',
-            style: textStyle,
-          ),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: Icon(
-              Icons.phone_android,
-              color: Colors.purple[500],
-              size: 50.0,
-            ),
-            title: Text(
-              'Proximity Detection Mode',
-              style: TextStyle(
-                  color: Colors.purple[400]
-              ),
-            ),
-            subtitle: Text(
-              'Raise alarm when device is removed from pocket',
-              style: TextStyle(
-                  color: Colors.purple[200],
-              ),
-            ),
-            onTap: (){
-              String msg = 'This function is not in place yet';
-              final snackBar = returnSnackBar(msg);
-              Scaffold.of(context).showSnackBar(snackBar);
-            },
-          ),
+          // Divider(
+          //   height: 20.0,
+          //   color: Colors.grey[900],
+          // ),
+          // Text(
+          //   'PROXIMITY',
+          //   style: textStyle,
+          // ),
+          // ListTile(
+          //   contentPadding: EdgeInsets.zero,
+          //   leading: Icon(
+          //     Icons.phone_android,
+          //     color: Colors.purple[500],
+          //     size: 50.0,
+          //   ),
+          //   title: Text(
+          //     'Proximity Detection Mode',
+          //     style: TextStyle(
+          //         color: Colors.purple[400]
+          //     ),
+          //   ),
+          //   subtitle: Text(
+          //     'Raise alarm when device is removed from pocket',
+          //     style: TextStyle(
+          //         color: Colors.purple[200],
+          //     ),
+          //   ),
+          //   onTap: (){
+          //     String msg = 'This function is not in place yet';
+          //     final snackBar = returnSnackBar(msg);
+          //     Scaffold.of(context).showSnackBar(snackBar);
+          //   },
+          // ),
           Divider(
             height: 20.0,
             color: Colors.grey[900],
@@ -205,32 +202,67 @@ class _SnackBarWidgetState extends State<SnackBarWidget> {
   }
 }
 
-
   void _playAlarm() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String mp3Uri =  pref.getString('mp3Uri');
-    AudioPlayer player = AudioPlayer();
-    player.play(mp3Uri, isLocal: true);
-    print('playing....');
+    player.loop(
+      'audio/Police_Siren_3.mp3',
+      stayAwake: true,
+      volume: 1.0
+    ).then((currentPlayer){
+      currentAudioLoop = currentPlayer;
+    });
   }
 
-// DETECT MOVEMENT AND TRIGGER ALLARM
-void detectMovement() async {
-  // Future.delayed(Duration(seconds: graceTime * 2), () async {
-  StreamSubscription _accelSubscription;
-  void _stopAccelerometer() {
-    if (_accelSubscription == null) return;
-    _accelSubscription.cancel();
-    _accelSubscription = null;
-  }
-  _accelSubscription = accelerometerEvents.listen((AccelerometerEvent event) {
-    if (event.x < -0.1) {
-      print(event);
-      _stopAccelerometer();
-      // TRIGGER THE ALARM HERE
-      _playAlarm();
-      print("Phone was shaked ACCELERO USER");
+  void _authenticateUser() async {
+    try {
+      var localAuth = LocalAuthentication();
+      bool didAuthenticate = await localAuth.authenticateWithBiometrics(
+        localizedReason: 'Please authenticate to comfirm ownership',
+        stickyAuth: true,
+        useErrorDialogs: true
+      );
+      if (didAuthenticate) {
+        currentAudioLoop.stop();
+        print('Alarm stopped');
+      } else {
+        print('Alarm continue, You are not the owner');
+      }
+    } on MissingPluginException catch(e){
+      print({'missing plugin error': e});
+    } on PlatformException catch(e) {
+    //   if (e.code == auth_error.notAvailable) {
+    // // Handle this exception here.
+    //   }
+      // Fluttertoast.showToast(
+      //   msg: "Platform Exception for Fingerprint Authentication",
+      //   toastLength: Toast.LENGTH_SHORT,
+      //   gravity: ToastGravity.BOTTOM,
+      //   timeInSecForIos: 1,
+      //   backgroundColor: Colors.black,
+      //   textColor: Colors.white,
+      //   fontSize: 16.0
+      // );
+      print({'Platform error': e});
     }
+  }
+
+  // DETECT MOVEMENT AND TRIGGER ALLARM
+  void detectMovement(graceTime) async {
+    Future.delayed(Duration(seconds: graceTime * 2), () async {
+    StreamSubscription _accelSubscription;
+    void _stopAccelerometer() {
+      if (_accelSubscription == null) return;
+      _accelSubscription.cancel();
+      _accelSubscription = null;
+    }
+    _accelSubscription = accelerometerEvents.listen((AccelerometerEvent event) {
+      if (event.x < -0.1) {
+        print(event);
+        _stopAccelerometer();
+        _playAlarm();
+        _authenticateUser();
+        print("Phone was shaked ACCELERO USER");
+      }
+    });
+    print('detector started');
   });
-  print('detector started');
 }
