@@ -3,8 +3,6 @@ import 'package:phonetheft/pages/auth/sign_in.dart';
 import 'package:flutter/material.dart';
 
 class Authenticate extends StatefulWidget {
-  final Function logIn;
-  Authenticate({this.logIn});
   @override
   _AuthenticateState createState() => _AuthenticateState();
 }
@@ -17,7 +15,7 @@ class _AuthenticateState extends State<Authenticate> {
   @override
   Widget build(BuildContext context) {
     if (showLogin) {
-      return SignIn(toggleView: toggleView, logIn: widget.logIn,);
+      return SignIn(toggleView: toggleView);
     } else {
       return Register(toggleView: toggleView);
     }

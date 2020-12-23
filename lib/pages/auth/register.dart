@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:phonetheft/shared/constant.dart';
 import 'package:phonetheft/shared/spinner.dart';
-// import 'package:phonetheft/shared/userSettings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:phonetheft/services/auth.dart';
 
 class Register extends StatefulWidget {
   final Function toggleView;
@@ -14,12 +14,12 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  // final AuthServices _auth = AuthServices();
+  final AuthServices _auth = AuthServices();
   final _formKey = GlobalKey<FormState>();
   String email = '';
   String password = '';
   String username = '';
-  String error = '';
+  String _error = '';
   bool loading  = false;
   @override
   Widget build(BuildContext context) {
@@ -47,21 +47,21 @@ class _RegisterState extends State<Register> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Text(
-                error,
+                _error,
                 style: TextStyle(
                   color: Colors.red[300],
                   fontSize: 14.0,
                 ),
               ),
-              SizedBox(height: 20.0),
-              TextFormField(
-                obscureText: true,
-                decoration: inputFieldDecoration.copyWith(hintText: 'Username'),
-                validator: (val) => val.isEmpty ? 'Please give yourself a username' : null,
-                onChanged: (val) {
-                  setState(() { username = val.trim(); });
-                },
-              ),
+              // SizedBox(height: 20.0),
+              // TextFormField(
+              //   obscureText: true,
+              //   decoration: inputFieldDecoration.copyWith(hintText: 'Username'),
+              //   validator: (val) => val.isEmpty ? 'Please give yourself a username' : null,
+              //   onChanged: (val) {
+              //     setState(() { username = val.trim(); });
+              //   },
+              // ),
               SizedBox(height: 20.0),
               TextFormField(
                 decoration: inputFieldDecoration.copyWith(hintText: 'Email'),
@@ -89,30 +89,19 @@ class _RegisterState extends State<Register> {
                     fontSize: 20.0
                   ),
                 ),
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState.validate()) {
                     setState(() {
-                      error = "";
+                      _error = "";
                       loading = true;
                     });
-                    Future.delayed(Duration(seconds: 10), () async {
-                      SharedPreferences prefs = await SharedPreferences.getInstance();
-                      await prefs.setString('username', username);
-                      await prefs.setString('email', email);
-                      await prefs.setString('password', password);
-                      // user.username = username;
-                      // user.email = email;
-                      // user.password = password;
-                      loading = false;
-                      widget.toggleView();
-                    });
-                    // dynamic user =  await _auth.regWithEmailAndPassword(email, password);
-                    // if (user == null) {
-                    //   setState(() {
-                    //     loading = false;
-                    //     error = "Please Provide valid credentials";
-                    //   });
-                    // }
+                    dynamic user =  await _auth.registerWithEmailAndPassword(email, password);
+                    if (user == null) {
+                      setState(() {
+                        loading = false;
+                        _error = "Please Provide valid credentials";
+                      });
+                    }
                   }
                 },
               ),

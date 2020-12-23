@@ -26,6 +26,9 @@ dependencies:
   sensors: ^0.4.2+4
   flutter_spinkit: ^4.1.2+1
   shared_preferences: ^0.5.12
+  firebase_auth: ^0.14.0+5
+  cloud_firestore: ^0.12.9+4
+  provider: ^3.1.0
   android_alarm_manager: ^0.4.5+17
   audioplayers: ^0.17.0
   local_auth: ^0.6.1

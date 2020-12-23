@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/services.dart';
-import 'package:phonetheft/pages/auth/authenticate.dart';
 import 'package:phonetheft/shared/userSettings.dart';
 import 'package:phonetheft/services/alert.dart';
 import 'package:sensors/sensors.dart';
@@ -73,7 +72,6 @@ class _SnackBarWidgetState extends State<SnackBarWidget> {
   @override
   void initState() {
     super.initState();
-    // _authenticateUser();
   }
 
   @override

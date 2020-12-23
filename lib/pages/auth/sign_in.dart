@@ -1,8 +1,7 @@
 import 'package:phonetheft/shared/constant.dart';
 import 'package:phonetheft/shared/spinner.dart';
 import 'package:flutter/material.dart';
-
-// import 'package:brew_crew/services/auth.dart';
+import 'package:phonetheft/services/auth.dart';
 
 
 class SignIn extends StatefulWidget {
@@ -16,8 +15,8 @@ class SignIn extends StatefulWidget {
 
 class _SignInState extends State<SignIn> {
   final _formKey = GlobalKey<FormState>();
-  // final AuthServices _auth = AuthServices();
-  String username = '';
+  final AuthServices _auth = AuthServices();
+  String email = '';
   String password = '';
   String error = '';
   bool loading = false;
@@ -56,10 +55,10 @@ class _SignInState extends State<SignIn> {
               ),
               SizedBox(height: 20.0),
               TextFormField(
-                decoration: inputFieldDecoration.copyWith(hintText: 'Username'),
-                validator: (val) => val.isEmpty ? 'Please provide your username' : null,
+                decoration: inputFieldDecoration.copyWith(hintText: 'email'),
+                validator: (val) => val.isEmpty ? 'Please provide your email' : null,
                 onChanged: (val) {
-                  setState(() { username = val.trim(); });
+                  setState(() { email = val.trim(); });
                 },
               ),
               SizedBox(height: 20.0),
@@ -87,20 +86,13 @@ class _SignInState extends State<SignIn> {
                       error = "";
                       loading = true;
                     });
-                    // dynamic user =  await _auth.signInWithEmailAndPassword(email, password);
-                    Future.delayed(Duration(seconds: 3), () async {
-                      bool loggedIn = await widget.logIn(username, password);    
-                      if (loggedIn) {
-                      setState(() {
-                        loading = false;
-                      });
-                    } else {
+                    dynamic user =  await _auth.signInWithEmailAndPassword(email, password);
+                    if (user == null) {
                       setState(() {
                         loading = false;
                         error = "Oops, Please check your login credentials";
                       });
                     }
-                    });
                   }
                 },
               ),

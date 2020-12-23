@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1013465427277",
+    "project_id": "phonepolice-6feba",
+    "storage_bucket": "phonepolice-6feba.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1013465427277:android:b63da03113c14d29865b04",
+        "android_client_info": {
+          "package_name": "co.phonetheft"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1013465427277-rskcpqfg2nnf8k7ks1bp1jptrfgcdgbd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0ien3WucBf8dhbAHRHt8meGxQPxbwxMI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1013465427277-rskcpqfg2nnf8k7ks1bp1jptrfgcdgbd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
