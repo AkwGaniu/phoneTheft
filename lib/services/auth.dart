@@ -56,6 +56,11 @@ class AuthServices {
     }
   }
 
+  Future getCurrentUser () async {
+    dynamic user = _auths.currentUser();
+    return user;
+  }
+
   // SIGN OUT
   Future signOut() async {
     try {

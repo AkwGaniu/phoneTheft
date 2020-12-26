@@ -7,15 +7,16 @@ import 'package:phonetheft/services/auth.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await AndroidAlarmManager.initialize();
+  // WidgetsFlutterBinding.ensureInitialized();
+  // await AndroidAlarmManager.initialize();
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     title: 'Anti Phone Theft',
     routes: {
       '/': (context) => StreamProvider.value(
         value: AuthServices().user,
-        child: Wrapper()),
+        child: Wrapper()
+      ),
       '/settings': (context) => Settings(),
     },
   ));

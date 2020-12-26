@@ -4,14 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/services.dart';
+import 'package:phonetheft/pages/auth/authenticate.dart';
+import 'package:phonetheft/services/auth.dart';
+import 'package:phonetheft/services/models/user.dart';
 import 'package:phonetheft/shared/userSettings.dart';
 import 'package:phonetheft/services/alert.dart';
 import 'package:sensors/sensors.dart';
 import 'package:local_auth/local_auth.dart';
 
 
-String name = 'some name';  AudioCache player = AudioCache();
-AudioPlayer currentAudioLoop;
+String name = 'some name';
+AudioCache player = AudioCache();
 
 class PhoneTheft extends StatefulWidget {
   @override
@@ -53,6 +56,7 @@ class SnackBarWidget extends StatefulWidget {
 
 class _SnackBarWidgetState extends State<SnackBarWidget> {
   bool correctPass = false;
+  final AuthServices _auth = AuthServices();
 
   returnSnackBar(msg) {
     final snackBar = SnackBar(
@@ -76,6 +80,42 @@ class _SnackBarWidgetState extends State<SnackBarWidget> {
 
   @override
   Widget build(BuildContext context) {
+  void _authenticateUser() async {
+    Navigator.pushReplacement(
+    context, MaterialPageRoute(builder: (BuildContext context) => Authenticate()));
+  }
+  // DETECT MOVEMENT AND TRIGGER ALLARM
+  void detectMovement(graceTime) async {
+    Future.delayed(Duration(seconds: graceTime * 2), () async {
+    StreamSubscription _accelSubscription;
+    void _stopAccelerometer() {
+      if (_accelSubscription == null) return;
+      _accelSubscription.cancel();
+      _accelSubscription = null;
+    }
+    
+    void _playAlarm() async {
+      player.loop(
+        'audio/Police_Siren_3.mp3',
+        stayAwake: true,
+        volume: 1.0
+      ).then((currentPlayer){
+        current_user.currentAudioLoop = currentPlayer;
+      });
+    }
+    _accelSubscription = accelerometerEvents.listen((AccelerometerEvent event) async {
+      if (event.x < -0.1) {
+        print(event);
+        _stopAccelerometer();
+        _playAlarm();
+        // _authenticateUser();
+        await _auth.signOut();
+        print("Phone was shaked ACCELERO USER");
+      }
+    });
+    print('detector started');
+  });
+}
 
     TextStyle textStyle = TextStyle(
       fontSize: 20.0,
@@ -200,33 +240,26 @@ class _SnackBarWidgetState extends State<SnackBarWidget> {
   }
 }
 
-  void _playAlarm() async {
-    player.loop(
-      'audio/Police_Siren_3.mp3',
-      stayAwake: true,
-      volume: 1.0
-    ).then((currentPlayer){
-      currentAudioLoop = currentPlayer;
-    });
-  }
 
-  void _authenticateUser() async {
-    try {
-      var localAuth = LocalAuthentication();
-      bool didAuthenticate = await localAuth.authenticateWithBiometrics(
-        localizedReason: 'Please authenticate to comfirm ownership',
-        stickyAuth: true,
-        useErrorDialogs: true
-      );
-      if (didAuthenticate) {
-        currentAudioLoop.stop();
-        print('Alarm stopped');
-      } else {
-        print('Alarm continue, You are not the owner');
-      }
-    } on MissingPluginException catch(e){
-      print({'missing plugin error': e});
-    } on PlatformException catch(e) {
+
+  // void _authenticateUser() async {
+  //   Navigator.pushReplacement(context, 'newRoute')
+  //   // try {
+    //   var localAuth = LocalAuthentication();
+    //   bool didAuthenticate = await localAuth.authenticateWithBiometrics(
+    //     localizedReason: 'Please authenticate to comfirm ownership',
+    //     stickyAuth: true,
+    //     useErrorDialogs: true
+    //   );
+    //   if (didAuthenticate) {
+    //     currentAudioLoop.stop();
+    //     print('Alarm stopped');
+    //   } else {
+    //     print('Alarm continue, You are not the owner');
+    //   }
+    // } on MissingPluginException catch(e){
+    //   print({'missing plugin error': e});
+    // } on PlatformException catch(e) {
     //   if (e.code == auth_error.notAvailable) {
     // // Handle this exception here.
     //   }
@@ -239,28 +272,7 @@ class _SnackBarWidgetState extends State<SnackBarWidget> {
       //   textColor: Colors.white,
       //   fontSize: 16.0
       // );
-      print({'Platform error': e});
-    }
-  }
+    //   print({'Platform error': e});
+    // }
+  // }
 
-  // DETECT MOVEMENT AND TRIGGER ALLARM
-  void detectMovement(graceTime) async {
-    Future.delayed(Duration(seconds: graceTime * 2), () async {
-    StreamSubscription _accelSubscription;
-    void _stopAccelerometer() {
-      if (_accelSubscription == null) return;
-      _accelSubscription.cancel();
-      _accelSubscription = null;
-    }
-    _accelSubscription = accelerometerEvents.listen((AccelerometerEvent event) {
-      if (event.x < -0.1) {
-        print(event);
-        _stopAccelerometer();
-        _playAlarm();
-        _authenticateUser();
-        print("Phone was shaked ACCELERO USER");
-      }
-    });
-    print('detector started');
-  });
-}
