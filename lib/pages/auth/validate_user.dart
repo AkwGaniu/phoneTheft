@@ -21,7 +21,7 @@ class _ValidateUserState extends State<ValidateUser> {
   final AuthServices _auth = AuthServices();
   String password = '';
   CameraController _controller;
-  bool loading = false;
+  bool _loading = false;
   String _error = '';
   // ignore: unused_field
   Future<void> _initializeControllerFuture;
@@ -44,18 +44,16 @@ class _ValidateUserState extends State<ValidateUser> {
   }
 
   Future<void> _snapPicture() async {
-    setState(() { _theftDetected = true; });
     try {
-      if (_theftDetected) {
-        XFile imagePath = await _controller.takePicture();
-        setState(() {
-          _theftDetected = false;
-          imageFilePath = File(imagePath.path);
-        });
-        return;
-      }
+      setState(() { _theftDetected = true; });
+      XFile imagePath = await _controller.takePicture();
+      setState(() {
+        _theftDetected = false;
+        imageFilePath = File(imagePath.path);
+      });
+      return;
     } catch (e) {
-      print({'Error  ': e.toString()});
+      print({'Error': e.toString()});
       return;
     }
   }
@@ -81,20 +79,26 @@ class _ValidateUserState extends State<ValidateUser> {
   }
 
   void sendMail(String userEmail) async {
-    String username = 'ennytech666@gmail.com';
+    String username = 'phonepolice66@gmail.com';
     String password = 'ennytechservices@66';
     // ignore: deprecated_member_use
-    final smtpServer = gmail(username, password);    
+    final smtpServer = gmail(username, password); 
+    print({"username":username, "password":password});   
     // Create message.
     final message = Message()
       ..from = Address(username, 'Phone Police')
       ..recipients.add(userEmail)
       ..subject = 'Security Alert'
       ..html ="""
-                <div style="width:80%; border-radius:10px; margin:10px auto; background-color:#f5f4f4; padding:10px 20px">
-                <h3 style="font-size:20px">Hello, </h3>\n<p style="color:#00303f; font-size:20px">\tWe noticed a theft attempt on your mobile device just now.
-                Find attached the picture of the suspect</p>
-                <p style="color:#00303f; font-size:20px; margin-top:100px">Thanks.</p>
+                <div style="width: 100% background-color:#f5f4f4;">
+                  <div style="width: 70%; border-radius:10px; margin:20px auto; background-color:#fff; padding:10px 20px">
+                    <h3 style="font-size:20px">Hello, </h3>\n
+                    <p style="color:#00303f; font-size:20px">\t
+                      We noticed a theft attempt on your mobile device just now.
+                      Find attached the picture of the suspect
+                    </p>
+                    <p style="color:#00303f; font-size:20px; margin-top:100px">Thanks.</p>
+                  </div>
                 </div>
               """
       ..attachments.add(FileAttachment(imageFilePath));
@@ -123,7 +127,7 @@ class _ValidateUserState extends State<ValidateUser> {
         Navigator.of(context).pop();
       }
     );
-    return Scaffold(
+    return _loading ? Spin() : Scaffold(
       backgroundColor: Colors.purple[100],
       body: _theftDetected ? Column(
             children: [
@@ -222,6 +226,7 @@ class _ValidateUserState extends State<ValidateUser> {
                   if (_formKey.currentState.validate()) {
                     setState(() {
                       _error = '';
+                      _loading = true;
                     });
                     dynamic _currentUser = await _auth.getCurrentUser();
                     if (_currentUser == null) {
@@ -229,7 +234,7 @@ class _ValidateUserState extends State<ValidateUser> {
                       dynamic _user = await _auth.signInWithEmailAndPassword(email, password);
                       if (_user == null) {
                         setState(() {
-                          // _theftDetected = true;
+                          _loading = false;
                           _error = 'Incorrect Password';
                         });
                         await _snapPicture();
@@ -237,6 +242,7 @@ class _ValidateUserState extends State<ValidateUser> {
                       }
                     } else {
                       setState(() {
+                        _loading = false;
                         _error = 'Opps!!! something occured, please try again';
                       });
                       _auth.signOut();

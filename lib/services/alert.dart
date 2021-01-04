@@ -264,7 +264,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
               FlatButton(
                 color: Colors.purple[600],
                 child: Text(
-                  'Verify',
+                  'Submit',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 20.0
