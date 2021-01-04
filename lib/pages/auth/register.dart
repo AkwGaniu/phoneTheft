@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phonetheft/shared/constant.dart';
 import 'package:phonetheft/shared/spinner.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 import 'package:phonetheft/services/auth.dart';
 
 class Register extends StatefulWidget {

@@ -1,5 +1,3 @@
-import 'package:audioplayers/audioplayers.dart';
-
 class User {
   final String uid;
   final String email;
@@ -13,7 +11,7 @@ class CurrentUser {
   CurrentUser({ this.email, this.currentAudioLoop });
 }
 
-CurrentUser current_user = CurrentUser(
+CurrentUser currentuser = CurrentUser(
   email: '',
   currentAudioLoop: ''
 );

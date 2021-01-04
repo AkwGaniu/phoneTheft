@@ -7,11 +7,11 @@ class Spin extends StatelessWidget {
     return Container(
       color: Colors.purple[100],
       child: Center(
-      child: SpinKitRing(
-        color: Colors.white,
-        size: 100.0,
-      ),
+        child: SpinKitRing(
+          color: Colors.white,
+          size: 100.0,
         ),
+      ),
     );
   }
 }

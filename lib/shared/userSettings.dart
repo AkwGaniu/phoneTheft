@@ -18,13 +18,6 @@ class UserSettings {
   });
 }
 
-// String username;
-// String email;
-// String password;
-// int alarmDelay;
-// int detectDelay;
-// String alarmTone;
-
 UserSettings user = UserSettings(
   username: '',
   email: '',

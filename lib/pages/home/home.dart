@@ -1,16 +1,14 @@
 import 'dart:async';
-import 'package:android_alarm_manager/android_alarm_manager.dart';
+// import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audio_cache.dart';
-import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/services.dart';
-import 'package:phonetheft/pages/auth/authenticate.dart';
+// import 'package:audioplayers/audioplayers.dart';
+// import 'package:flutter/services.dart';
 import 'package:phonetheft/services/auth.dart';
 import 'package:phonetheft/services/models/user.dart';
 import 'package:phonetheft/shared/userSettings.dart';
 import 'package:phonetheft/services/alert.dart';
 import 'package:sensors/sensors.dart';
-import 'package:local_auth/local_auth.dart';
 
 
 String name = 'some name';
@@ -22,7 +20,7 @@ class PhoneTheft extends StatefulWidget {
 }
 
 class _PhoneTheftState extends State<PhoneTheft> {
-
+  AuthServices _auth = AuthServices();
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +37,13 @@ class _PhoneTheftState extends State<PhoneTheft> {
               Navigator.pushNamed(context, '/settings');
             },
             icon: Icon(Icons.settings),
+          ),
+           IconButton(
+            tooltip: 'Settings',
+            onPressed: () {
+              _auth.signOut();
+            },
+            icon: Icon(Icons.power_settings_new),
           ),
         ],
       ),
@@ -80,10 +85,6 @@ class _SnackBarWidgetState extends State<SnackBarWidget> {
 
   @override
   Widget build(BuildContext context) {
-  void _authenticateUser() async {
-    Navigator.pushReplacement(
-    context, MaterialPageRoute(builder: (BuildContext context) => Authenticate()));
-  }
   // DETECT MOVEMENT AND TRIGGER ALLARM
   void detectMovement(graceTime) async {
     Future.delayed(Duration(seconds: graceTime * 2), () async {
@@ -100,7 +101,7 @@ class _SnackBarWidgetState extends State<SnackBarWidget> {
         stayAwake: true,
         volume: 1.0
       ).then((currentPlayer){
-        current_user.currentAudioLoop = currentPlayer;
+        currentuser.currentAudioLoop = currentPlayer;
       });
     }
     _accelSubscription = accelerometerEvents.listen((AccelerometerEvent event) async {
@@ -108,7 +109,6 @@ class _SnackBarWidgetState extends State<SnackBarWidget> {
         print(event);
         _stopAccelerometer();
         _playAlarm();
-        // _authenticateUser();
         await _auth.signOut();
         print("Phone was shaked ACCELERO USER");
       }

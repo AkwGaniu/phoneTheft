@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:phonetheft/services/auth.dart';
+import 'package:phonetheft/services/models/user.dart';
+import 'package:phonetheft/shared/constant.dart';
 import 'package:phonetheft/shared/userSettings.dart';
 
 class MyDialog extends StatefulWidget {
@@ -12,7 +15,6 @@ class _MyDialogState extends State<MyDialog> {
     super.initState();
   }
   int _detectDelay = user.detectDelay;
-  // Color _c = Colors.redAccent;
   bool actionBtn = false;
   String title = "Please keep the device down";
   double height = 30.0;
@@ -91,6 +93,12 @@ class SettingsDialog extends StatefulWidget {
   _SettingsDialogState createState() => _SettingsDialogState();
 }
 class _SettingsDialogState extends State<SettingsDialog> {
+  String _email = '';
+  String _msg = '';
+  String _error = '';
+
+  final _formKey = GlobalKey<FormState>();
+  final AuthServices _auth = AuthServices();
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -101,8 +109,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
         ),
       ),
       content: StatefulBuilder(  // You need this, notice the parameters below:
-        builder: (BuildContext context, StateSetter setState) {
-          
+        builder: (BuildContext context, StateSetter setState) {   
         Column alarmDelayPopUp = Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -224,11 +231,84 @@ class _SettingsDialogState extends State<SettingsDialog> {
             ),
           ],
         );
-        
+
+        Form forgetPassword = Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Enter email ID',
+                style: TextStyle(
+                  fontSize: 18.0,
+                  color: Colors.brown[90]
+                ),
+              ),
+              Text(
+                (_error != '') ? _error : (_msg != '') ? _msg : '',
+                style: TextStyle(
+                  color: (_msg != '') ? Colors.green[300] : Colors.red[300],
+                  fontSize: 14.0,
+                ),
+              ),
+              SizedBox(height: 10.0),
+              TextFormField(
+                decoration: inputFieldDecoration.copyWith(hintText: 'Email'),
+                validator: (val) => val.isEmpty ? 'Please provide your email' : null,
+                onChanged: (val) {
+                  setState(() { _email = val.trim(); });
+                },
+              ),
+              SizedBox(height: 10.0),
+              FlatButton(
+                color: Colors.purple[600],
+                child: Text(
+                  'Verify',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20.0
+                  ),
+                ),
+                onPressed: () async {
+                  if (_formKey.currentState.validate()) {
+                    String userEmail = currentuser.email;
+                    if (userEmail == _email) {
+                      setState(() {
+                        _error = '';
+                        _msg = '';
+                      });
+                      bool sentEmail = await _auth.forgetPassword(_email);
+                      if (sentEmail) {
+                        setState(() {
+                          _email = '';
+                          _msg = 'Check your mail for password reset link';
+                        });
+                      } else {
+                        setState(() {
+                          _msg = 'Sorry, something occured. Please try again';
+                        });
+                      }
+                    } else {
+                      setState(() {
+                        _error = 'Your email address does not exist';
+                      });
+                    }
+                  }
+                },
+              ),
+            ],
+          ),
+        );
+         
         return Container(
           padding: EdgeInsets.all(0.0),
           height: widget.height,
-          child: widget.content == 'alarm' ? alarmDelayPopUp : detectDelayPopUp,
+          child: (widget.content == 'alarm')
+            ? alarmDelayPopUp
+            : (widget.content == 'forgetPasswod' )
+            ? forgetPassword
+            : detectDelayPopUp,
         );
       }),
       actions: <Widget>[

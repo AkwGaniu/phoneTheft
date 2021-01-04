@@ -23,7 +23,6 @@ class AuthServices {
       FirebaseUser user = result.user;
       return _createCustomUser(user);
     } catch (e) {
-      print(e.toString());
       return null;
     }
   }
@@ -32,15 +31,14 @@ class AuthServices {
   Future signInWithEmailAndPassword(String email, String password) async {
     try {
       AuthResult result = await _auths.signInWithEmailAndPassword(
-          email: email, password: password);
+        email: email, password: password);
       FirebaseUser user = result.user;
-      _createCustomUser(user);
+      print({"Firebase Errror on login": user});
+      return _createCustomUser(user);
     } catch (e) {
-      print(e.toString());
       return null;
     }
   }
-
   // USER REGISTRATION
   Future registerWithEmailAndPassword(String email, String password) async {
     try {
@@ -48,7 +46,7 @@ class AuthServices {
           email: email, password: password);
       FirebaseUser user = result.user;
       // await DatabaseServices(uid: user.uid)
-          // .updateUserData('0', 'New crew member', 100);
+      // .updateUserData('0', 'New crew member', 100);
       return _createCustomUser(user);
     } catch (e) {
       print(e.toString());
@@ -59,6 +57,16 @@ class AuthServices {
   Future getCurrentUser () async {
     dynamic user = _auths.currentUser();
     return user;
+  }
+
+  Future<bool> forgetPassword (email) async {
+    try {
+      await _auths.sendPasswordResetEmail(email: email);
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
   }
 
   // SIGN OUT

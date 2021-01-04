@@ -1,6 +1,8 @@
+// import 'package:phonetheft/main.dart';
+// import 'package:phonetheft/pages/home/camera.dart';
 import 'package:phonetheft/pages/home/home.dart';
 import 'package:phonetheft/pages/auth/authenticate.dart';
-import 'package:phonetheft/pages/auth/validate_user.dart';
+// import 'package:phonetheft/pages/auth/validate_user.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:phonetheft/services/models/user.dart';
@@ -14,9 +16,9 @@ class _WrapperState extends State<Wrapper> {
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
     if(user != null) {
-      current_user.email = user.email;
-      if (current_user.currentAudioLoop != '') {
-        current_user.currentAudioLoop.stop();
+      currentuser.email = user.email;
+      if (currentuser.currentAudioLoop != '') {
+        currentuser.currentAudioLoop.stop();
       }
       print({"uid": user.uid, "email": user.email});
     }
@@ -25,6 +27,7 @@ class _WrapperState extends State<Wrapper> {
     } else {
       // return ValidateUser();
       return PhoneTheft();
+      // return TakeCamera();
     }
   }
 }
