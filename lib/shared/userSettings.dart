@@ -4,7 +4,7 @@ class UserSettings {
   String password;
   int alarmDelay;
   int detectDelay;
-  String alarmTone;
+  int alarmTone;
   bool loggedIn;
 
   UserSettings({
@@ -24,8 +24,9 @@ UserSettings user = UserSettings(
   password: '',
   alarmDelay: 0,
   detectDelay: 5,
-  alarmTone: '',
+  alarmTone: 1,
   loggedIn: false
 );
 
-bool watchOn = false;
+bool motionWatchOn = false;
+bool chargingWatchOn = false;

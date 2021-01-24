@@ -11,9 +11,11 @@ class Settings extends StatefulWidget {
 class _SettingsState extends State<Settings> {
 @override
   Widget build(BuildContext context) {
-
     int _alarmDelay = user.alarmDelay;
     int _detectDelay = user.detectDelay;
+    String _alarmTone () {
+      return (user.alarmTone == 1) ? 'Police sirene tone' :  'Ambulance tone';
+    }
 
     TextStyle textStyle = TextStyle(
       fontSize: 15.0,
@@ -38,6 +40,7 @@ class _SettingsState extends State<Settings> {
         Navigator.of(context).pop();
       }
     );
+    
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
@@ -47,7 +50,7 @@ class _SettingsState extends State<Settings> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text('Phone Theft Alarm'),
+              Text('Phone Police'),
               SizedBox(height: 3.0,),
               Text(
                 'Settings',
@@ -96,7 +99,7 @@ class _SettingsState extends State<Settings> {
               },
             ),
             Divider(
-              color: Colors.black,
+              color: Colors.grey[400],
             ),
             ListTile(
               contentPadding: EdgeInsets.zero,
@@ -123,7 +126,7 @@ class _SettingsState extends State<Settings> {
               },
             ),
             Divider(
-              color: Colors.black,
+              color: Colors.grey[400],
             ),
             Text(
               'ALARM TONE',
@@ -132,23 +135,29 @@ class _SettingsState extends State<Settings> {
             ListTile(
               contentPadding: EdgeInsets.zero,
               title: Text(
-                'Grace time before alarm trigger',
+                'Choose alarm tone',
                 style: TextStyle(
-                    color: Colors.purple[400]
+                  color: Colors.purple[400]
                 ),
               ),
               subtitle: Text(
-                '10 seconds',
+                _alarmTone(),
                 style: TextStyle(
-                    color: Colors.purple[200]
+                  color: Colors.purple[200]
                 ),
               ),
               onTap: (){
-
+                String title = 'Choose alarm tone';
+                double height = 130.0;
+                showDialog(
+                context: context,
+                builder: (_) {
+                  return SettingsDialog(content: 'alarmTone', height: height, title: title, action: button);
+                });
               },
             ),
             Divider(
-              color: Colors.black,
+              color: Colors.grey[400],
             ),
             Text(
               'SECURITY',
@@ -157,23 +166,30 @@ class _SettingsState extends State<Settings> {
             ListTile(
               contentPadding: EdgeInsets.zero,
               title: Text(
-                'Change PIN',
+                'Change Password',
                 style: TextStyle(
-                    color: Colors.purple[400]
+                  color: Colors.purple[400]
                 ),
               ),
               subtitle: Text(
-                'password',
+                'Provide your email and change your password',
                 style: TextStyle(
-                    color: Colors.purple[200]
+                  color: Colors.purple[200]
                 ),
               ),
               onTap: (){
-
+                String title = 'Change Password';
+                double height = 165.0;
+                showDialog(
+                  context: context,
+                  builder: (_) {
+                    return SettingsDialog(content: 'forgetPassword', height: height, title: title, action: button);
+                  }
+                );
               },
             ),
             Divider(
-              color: Colors.black,
+              color: Colors.grey[400],
             ),
             Text(
               'OTHERS',
@@ -190,15 +206,20 @@ class _SettingsState extends State<Settings> {
               subtitle: Text(
                 'FAQ',
                 style: TextStyle(
-                    color: Colors.purple[200]
-                ),
+                  color: Colors.purple[200]                ),
               ),
               onTap: (){
-
+                String title = 'Questions and Answers';
+                double height = 450.0;
+                showDialog(
+                  context: context,
+                  builder: (_) {
+                  return SettingsDialog(content: 'faq', height: height, title: title, action: button);
+                  });
               },
             ),
             Divider(
-              color: Colors.black,
+              color: Colors.grey[400],
             ),
           ],
         ),

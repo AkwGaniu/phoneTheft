@@ -11,7 +11,7 @@ void main() async {
   // await AndroidAlarmManager.initialize();
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    title: 'Anti Phone Theft',
+    title: 'Phone Police',
     routes: {
       '/': (context) => StreamProvider.value(
         value: AuthServices().user,

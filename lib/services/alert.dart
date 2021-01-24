@@ -29,9 +29,6 @@ class _MyDialogState extends State<MyDialog> {
         });
       });
       if (_detectDelay < 0) {
-        setState(() {
-          watchOn = true;
-        });
         Navigator.pop(context);
         _detectDelay = num;
         break;
@@ -96,7 +93,12 @@ class _SettingsDialogState extends State<SettingsDialog> {
   String _email = '';
   String _msg = '';
   String _error = '';
-
+  TextStyle textStyle = TextStyle(
+      fontSize: 15.0,
+      fontWeight: FontWeight.bold,
+      letterSpacing: 1.0,
+      color: Colors.purple[300]
+  );
   final _formKey = GlobalKey<FormState>();
   final AuthServices _auth = AuthServices();
   @override
@@ -109,7 +111,8 @@ class _SettingsDialogState extends State<SettingsDialog> {
         ),
       ),
       content: StatefulBuilder(  // You need this, notice the parameters below:
-        builder: (BuildContext context, StateSetter setState) {   
+        builder: (BuildContext context, StateSetter setState) {
+
         Column alarmDelayPopUp = Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -232,6 +235,115 @@ class _SettingsDialogState extends State<SettingsDialog> {
           ],
         );
 
+        Column alarmTonePopUp = Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            RadioListTile<int>(
+              title: const Text('Police sirene'),
+              value: 1,
+              activeColor: Colors.purple,
+              selected: user.alarmTone == 1 ? true : false,
+              groupValue: user.alarmTone,
+              onChanged: (int value) {
+                setState(() {
+                  user.alarmTone = value;
+                });
+              },
+            ),
+            RadioListTile<int>(
+              title: const Text('Ambulance'),
+              value: 2,
+              activeColor: Colors.purple,
+              selected: user.alarmTone == 2 ? true : false,
+              groupValue: user.alarmTone,
+              onChanged: (int value) {
+                setState(() {
+                  user.alarmTone = value;
+                });
+              },
+            ),
+          ],
+        );
+
+        Column faqPopUp = Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Divider(
+              color: Colors.grey[400],
+            ),
+            Text(
+              'Will the alarm ring if device is silence?',
+              style: textStyle,
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(vertical:10.0, horizontal: 15.0),
+              child: Text(
+                'Yes, the alarm will always ring in full volume.',
+                style: TextStyle(
+                color: Colors.purple[200],
+                  fontSize: 12.0
+                )
+              ),
+            ),
+            Divider(
+              color: Colors.grey[400],
+            ),
+            Text(
+              'How does motion detection mode work?',
+              style: textStyle,
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(vertical:10.0, horizontal: 15.0),
+              child: Text(
+                  'If the device is moved, then theft detection process will be triggered.',
+                  style: TextStyle(
+                    color: Colors.purple[200],
+                  fontSize: 12.0
+                  )
+              ),
+            ),
+            Divider(
+              color: Colors.grey[400],
+            ),
+            Text(
+              'How does charging detection mode work?',
+              style: textStyle,
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(vertical:10.0, horizontal: 15.0),
+              child: Text(
+                  'If the device is unplugged from power source, then theft detection process will be triggered.',
+                  style: TextStyle(
+                    color: Colors.purple[200],
+                    fontSize: 12.0
+                  )
+              ),
+            ),
+            Divider(
+              color: Colors.grey[400],
+            ),
+            Text(
+              'Does theft detection mode (motion or charging) activate automatically?',
+              style: textStyle,
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(vertical:10.0, horizontal: 15.0),
+              child: Text(
+                  'No, you will have to activate it yourself.',
+                  style: TextStyle(
+                    color: Colors.purple[200],
+                  fontSize: 12.0
+                  )
+              ),
+            ),
+            Divider(
+              color: Colors.grey[400],
+            ),
+          ],
+        );
+
         Form forgetPassword = Form(
           key: _formKey,
           child: Column(
@@ -286,7 +398,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                         });
                       } else {
                         setState(() {
-                          _msg = 'Sorry, something occured. Please try again';
+                          _msg = 'Sorry, something occurred. Please try again';
                         });
                       }
                     } else {
@@ -306,8 +418,12 @@ class _SettingsDialogState extends State<SettingsDialog> {
           height: widget.height,
           child: (widget.content == 'alarm')
             ? alarmDelayPopUp
-            : (widget.content == 'forgetPasswod' )
+            : (widget.content == 'forgetPassword' )
             ? forgetPassword
+            : (widget.content == 'faq' )
+            ? faqPopUp
+            : (widget.content == 'alarmTone')
+            ? alarmTonePopUp
             : detectDelayPopUp,
         );
       }),

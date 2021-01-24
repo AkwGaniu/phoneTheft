@@ -2,16 +2,15 @@ import 'dart:async';
 // import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audio_cache.dart';
-// import 'package:audioplayers/audioplayers.dart';
 // import 'package:flutter/services.dart';
 import 'package:phonetheft/services/auth.dart';
 import 'package:phonetheft/services/models/user.dart';
 import 'package:phonetheft/shared/userSettings.dart';
 import 'package:phonetheft/services/alert.dart';
 import 'package:sensors/sensors.dart';
+import 'package:battery/battery.dart';
 
 
-String name = 'some name';
 AudioCache player = AudioCache();
 
 class PhoneTheft extends StatefulWidget {
@@ -20,16 +19,14 @@ class PhoneTheft extends StatefulWidget {
 }
 
 class _PhoneTheftState extends State<PhoneTheft> {
-  AuthServices _auth = AuthServices();
-
+  AuthServices _auth = AuthServices();  
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
         backgroundColor: Colors.purple[400],
-        title: Text('Anti Phone Theft'),
+        title: Text('Phone Police'),
         actions: <Widget>[
           IconButton(
             tooltip: 'Settings',
@@ -48,7 +45,15 @@ class _PhoneTheftState extends State<PhoneTheft> {
         ],
       ),
 
-      body: SnackBarWidget(),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('images/bg3.png'),
+            fit: BoxFit.cover
+          )
+        ),
+        child: SnackBarWidget()
+      ),
     );
   }
 }
@@ -62,6 +67,9 @@ class SnackBarWidget extends StatefulWidget {
 class _SnackBarWidgetState extends State<SnackBarWidget> {
   bool correctPass = false;
   final AuthServices _auth = AuthServices();
+  StreamSubscription<BatteryState> _batterySubscription;
+  BatteryState _batteryState;
+    var _battery = Battery();
 
   returnSnackBar(msg) {
     final snackBar = SnackBar(
@@ -81,48 +89,69 @@ class _SnackBarWidgetState extends State<SnackBarWidget> {
   @override
   void initState() {
     super.initState();
+    _batterySubscription = _battery.onBatteryStateChanged.listen((BatteryState state) {
+      setState(() {
+        _batteryState = state;
+      });
+    });
   }
-
+  void dispose() {
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
-  // DETECT MOVEMENT AND TRIGGER ALLARM
-  void detectMovement(graceTime) async {
-    Future.delayed(Duration(seconds: graceTime * 2), () async {
-    StreamSubscription _accelSubscription;
-    void _stopAccelerometer() {
-      if (_accelSubscription == null) return;
-      _accelSubscription.cancel();
-      _accelSubscription = null;
-    }
-    
     void _playAlarm() async {
-      player.loop(
-        'audio/Police_Siren_3.mp3',
+      var loop = player.loop(
+        (user.alarmTone == 1) ? 'audio/Police_Sirene.mp3' : 'audio/ambulance.mp3',
         stayAwake: true,
         volume: 1.0
-      ).then((currentPlayer){
+      );
+      loop.then((currentPlayer){
         currentuser.currentAudioLoop = currentPlayer;
       });
     }
-    _accelSubscription = accelerometerEvents.listen((AccelerometerEvent event) async {
-      if (event.x < -0.1) {
-        print(event);
-        _stopAccelerometer();
+    // DETECT MOVEMENT AND TRIGGER ALLARM
+    void _detectMovement(graceTime) async {
+      Future.delayed(Duration(seconds: graceTime * 2), () async {
+        setState(() { motionWatchOn = true; });
+        StreamSubscription _accelSubscription;
+        void _stopAccelerometer() {
+          if (_accelSubscription == null) return;
+          _accelSubscription.cancel();
+          _accelSubscription = null;
+        }
+      _accelSubscription = accelerometerEvents.listen((AccelerometerEvent event) async {
+        if (event.x < -0.1) {
+          _stopAccelerometer();
+          _playAlarm();
+          await _auth.signOut();
+          print("Phone was shaked ACCELERO USER");
+        }
+      });
+      print('detector started');
+    });
+  }
+
+  void _detectectChargingMode (graceTime) async {
+    Future.delayed(Duration(seconds: graceTime * 2), () async {
+      setState(() { chargingWatchOn = true; });
+      if (_batteryState != BatteryState.charging) {
+        print({'hi': _batteryState});
+        if (_batterySubscription != null) {
+          _batterySubscription.cancel();
+        }
         _playAlarm();
         await _auth.signOut();
-        print("Phone was shaked ACCELERO USER");
       }
     });
-    print('detector started');
-  });
-}
+  }
 
-    TextStyle textStyle = TextStyle(
-      fontSize: 20.0,
-      fontWeight: FontWeight.bold,
-      letterSpacing: 1.0,
-      color: Colors.purple[300]
-    );
+  TextStyle textStyle = TextStyle(
+    fontSize: 20.0,
+    fontWeight: FontWeight.bold,
+    letterSpacing: 1.0,
+    color: Colors.purple[300]
+  );
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
       child: Column(
@@ -146,7 +175,7 @@ class _SnackBarWidgetState extends State<SnackBarWidget> {
               ),
             ),
             subtitle: Text(
-              watchOn ? 'Motion detection activated' : 'Raise alarm when phone moves',
+              motionWatchOn ? 'Motion detection activated' : 'Raise alarm when phone moves',
               style: TextStyle(
                 color: Colors.purple[200],
               ),
@@ -159,13 +188,13 @@ class _SnackBarWidgetState extends State<SnackBarWidget> {
                   return MyDialog();
                 }
               );
-              detectMovement(graceTime);
+              _detectMovement(graceTime);
               // await AndroidAlarmManager.oneShot(Duration(seconds: 2), 0, _authenticateUser);
             },
           ),
           Divider(
             height: 20.0,
-            color: Colors.grey[900],
+            color: Colors.grey[400],
           ),
           Text(
             'CHARGING',
@@ -173,10 +202,29 @@ class _SnackBarWidgetState extends State<SnackBarWidget> {
           ),
           ListTile(
             contentPadding: EdgeInsets.zero,
-            onTap: (){
-              String msg = 'This function is not in place yet';
-              final snackBar = returnSnackBar(msg);
-              Scaffold.of(context).showSnackBar(snackBar);
+            onTap: () {
+              _batterySubscription = _battery.onBatteryStateChanged.listen((BatteryState state) {
+                setState(() {
+                  _batteryState = state;
+                });
+              });
+              if (_batteryState == BatteryState.discharging) {
+                String msg = 'Please connect phone to power source';
+                final snackBar = returnSnackBar(msg);
+                Scaffold.of(context).showSnackBar(snackBar);
+                if (_batterySubscription != null) {
+                  _batterySubscription.cancel();
+                }
+              } else if (_batteryState == BatteryState.charging) {
+                int graceTime = user.detectDelay;
+                showDialog(
+                  context: context,
+                  builder: (_) {
+                    return MyDialog();
+                  }
+                );
+                _detectectChargingMode(graceTime);
+              }
             },
             leading: Icon(
               Icons.phone_android,
@@ -190,48 +238,15 @@ class _SnackBarWidgetState extends State<SnackBarWidget> {
               ),
             ),
             subtitle: Text(
-              'Raise alarm when device is unplugged',
+              chargingWatchOn ? 'Charging Detection Mode Activated' : 'Raise alarm when device is unplugged',
               style: TextStyle(
                 color: Colors.purple[200],
               ),
             ),
           ),
-          // Divider(
-          //   height: 20.0,
-          //   color: Colors.grey[900],
-          // ),
-          // Text(
-          //   'PROXIMITY',
-          //   style: textStyle,
-          // ),
-          // ListTile(
-          //   contentPadding: EdgeInsets.zero,
-          //   leading: Icon(
-          //     Icons.phone_android,
-          //     color: Colors.purple[500],
-          //     size: 50.0,
-          //   ),
-          //   title: Text(
-          //     'Proximity Detection Mode',
-          //     style: TextStyle(
-          //         color: Colors.purple[400]
-          //     ),
-          //   ),
-          //   subtitle: Text(
-          //     'Raise alarm when device is removed from pocket',
-          //     style: TextStyle(
-          //         color: Colors.purple[200],
-          //     ),
-          //   ),
-          //   onTap: (){
-          //     String msg = 'This function is not in place yet';
-          //     final snackBar = returnSnackBar(msg);
-          //     Scaffold.of(context).showSnackBar(snackBar);
-          //   },
-          // ),
           Divider(
             height: 20.0,
-            color: Colors.grey[900],
+            color: Colors.grey[400],
           ),
 
         ],
@@ -239,40 +254,3 @@ class _SnackBarWidgetState extends State<SnackBarWidget> {
     );
   }
 }
-
-
-
-  // void _authenticateUser() async {
-  //   Navigator.pushReplacement(context, 'newRoute')
-  //   // try {
-    //   var localAuth = LocalAuthentication();
-    //   bool didAuthenticate = await localAuth.authenticateWithBiometrics(
-    //     localizedReason: 'Please authenticate to comfirm ownership',
-    //     stickyAuth: true,
-    //     useErrorDialogs: true
-    //   );
-    //   if (didAuthenticate) {
-    //     currentAudioLoop.stop();
-    //     print('Alarm stopped');
-    //   } else {
-    //     print('Alarm continue, You are not the owner');
-    //   }
-    // } on MissingPluginException catch(e){
-    //   print({'missing plugin error': e});
-    // } on PlatformException catch(e) {
-    //   if (e.code == auth_error.notAvailable) {
-    // // Handle this exception here.
-    //   }
-      // Fluttertoast.showToast(
-      //   msg: "Platform Exception for Fingerprint Authentication",
-      //   toastLength: Toast.LENGTH_SHORT,
-      //   gravity: ToastGravity.BOTTOM,
-      //   timeInSecForIos: 1,
-      //   backgroundColor: Colors.black,
-      //   textColor: Colors.white,
-      //   fontSize: 16.0
-      // );
-    //   print({'Platform error': e});
-    // }
-  // }
-

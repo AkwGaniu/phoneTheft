@@ -4,6 +4,7 @@ import 'package:phonetheft/pages/home/home.dart';
 import 'package:phonetheft/pages/auth/authenticate.dart';
 // import 'package:phonetheft/pages/auth/validate_user.dart';
 import 'package:flutter/material.dart';
+import 'package:phonetheft/shared/userSettings.dart';
 import 'package:provider/provider.dart';
 import 'package:phonetheft/services/models/user.dart';
 
@@ -19,15 +20,17 @@ class _WrapperState extends State<Wrapper> {
       currentuser.email = user.email;
       if (currentuser.currentAudioLoop != '') {
         currentuser.currentAudioLoop.stop();
+        setState(() {
+          motionWatchOn = false;
+          chargingWatchOn = false;
+        });
       }
       print({"uid": user.uid, "email": user.email});
     }
     if (user == null) {
       return Authenticate();
     } else {
-      // return ValidateUser();
       return PhoneTheft();
-      // return TakeCamera();
     }
   }
 }

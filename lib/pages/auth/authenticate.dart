@@ -1,8 +1,9 @@
 import 'package:phonetheft/pages/auth/register.dart';
-// import 'package:phonetheft/pages/auth/sign_in.dart';
+import 'package:phonetheft/pages/auth/sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:phonetheft/pages/auth/validate_user.dart';
 import 'package:phonetheft/services/models/user.dart';
+import 'package:phonetheft/shared/userSettings.dart';
 
 class Authenticate extends StatefulWidget {
   @override
@@ -18,9 +19,12 @@ class _AuthenticateState extends State<Authenticate> {
   @override
   Widget build(BuildContext context) {
     if (currentuser.email == '') {
-      // return SignIn(toggleView: toggleView);
-      return Register(toggleView: toggleView);
-    } else {
+      if (showLogin) {
+        return SignIn(toggleView: toggleView);
+      } else {
+        return Register(toggleView: toggleView);
+      }
+    } else if (!motionWatchOn || !chargingWatchOn) {
       return ValidateUser();
     }
   }

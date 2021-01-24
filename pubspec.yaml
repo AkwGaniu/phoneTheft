@@ -36,7 +36,8 @@ dependencies:
   audioplayers: ^0.17.0
   mailer: ^3.2.1
   camera: ^0.6.2+1
-  image_picker: ^0.6.7+17
+  backendless_sdk: ^1.0.0
+  battery: ^1.0.11
 
 dev_dependencies:
   flutter_test:
@@ -55,11 +56,12 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - assets/
+    - assets/images/
     - assets/audio/
-  #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/assets-and-images/#resolution-aware.
+  #   https://flutter.dev/assets-and-images/#resolution-aware.
 
   # For details regarding adding assets from package dependencies, see
   # https://flutter.dev/assets-and-images/#from-packages
