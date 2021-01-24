@@ -63,165 +63,173 @@ class _SettingsState extends State<Settings> {
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              'GRACE TIME',
-              style: textStyle,
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(
-                'Grace time before alarm trigger',
-                style: TextStyle(
-                  color: Colors.purple[400]
-                ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/bg5.png'),
+            fit: BoxFit.cover
+          )
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                'GRACE TIME',
+                style: textStyle,
               ),
-              subtitle: Text(
-                '$_alarmDelay seconds',
-                style: TextStyle(
-                    color: Colors.purple[200]
-                ),
-              ),
-              onTap: (){
-                double height = 340.0;
-                String title = 'Grace time before Alarm';
-                showDialog(
-                  context: context,
-                  builder: (_) {
-                    return SettingsDialog(content: 'alarm', height: height, title: title, action: button,);
-                  }
-                );
-              },
-            ),
-            Divider(
-              color: Colors.grey[400],
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(
-                'Grace time before detection',
-                style: TextStyle(
-                  color: Colors.purple[400]
-                ),
-              ),
-              subtitle: Text(
-                '$_detectDelay seconds',
-                style: TextStyle(
-                  color: Colors.purple[200]
-                ),
-              ),
-              onTap: (){
-                String title = 'Grace time before detection';
-                double height = 170.0;
-                showDialog(
-                context: context,
-                builder: (_) {
-                  return SettingsDialog(content: 'detect', height: height, title: title, action: button);
-                });
-              },
-            ),
-            Divider(
-              color: Colors.grey[400],
-            ),
-            Text(
-              'ALARM TONE',
-              style: textStyle,
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(
-                'Choose alarm tone',
-                style: TextStyle(
-                  color: Colors.purple[400]
-                ),
-              ),
-              subtitle: Text(
-                _alarmTone(),
-                style: TextStyle(
-                  color: Colors.purple[200]
-                ),
-              ),
-              onTap: (){
-                String title = 'Choose alarm tone';
-                double height = 130.0;
-                showDialog(
-                context: context,
-                builder: (_) {
-                  return SettingsDialog(content: 'alarmTone', height: height, title: title, action: button);
-                });
-              },
-            ),
-            Divider(
-              color: Colors.grey[400],
-            ),
-            Text(
-              'SECURITY',
-              style: textStyle,
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(
-                'Change Password',
-                style: TextStyle(
-                  color: Colors.purple[400]
-                ),
-              ),
-              subtitle: Text(
-                'Provide your email and change your password',
-                style: TextStyle(
-                  color: Colors.purple[200]
-                ),
-              ),
-              onTap: (){
-                String title = 'Change Password';
-                double height = 165.0;
-                showDialog(
-                  context: context,
-                  builder: (_) {
-                    return SettingsDialog(content: 'forgetPassword', height: height, title: title, action: button);
-                  }
-                );
-              },
-            ),
-            Divider(
-              color: Colors.grey[400],
-            ),
-            Text(
-              'OTHERS',
-              style:textStyle,
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(
-                'Questions and Answers',
-                style: TextStyle(
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(
+                  'Grace time before alarm trigger',
+                  style: TextStyle(
                     color: Colors.purple[400]
+                  ),
                 ),
+                subtitle: Text(
+                  '$_alarmDelay seconds',
+                  style: TextStyle(
+                      color: Colors.purple[200]
+                  ),
+                ),
+                onTap: (){
+                  double height = 340.0;
+                  String title = 'Grace time before Alarm';
+                  showDialog(
+                    context: context,
+                    builder: (_) {
+                      return SettingsDialog(content: 'alarm', height: height, title: title, action: button,);
+                    }
+                  );
+                },
               ),
-              subtitle: Text(
-                'FAQ',
-                style: TextStyle(
-                  color: Colors.purple[200]                ),
+              Divider(
+                color: Colors.grey[400],
               ),
-              onTap: (){
-                String title = 'Questions and Answers';
-                double height = 450.0;
-                showDialog(
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(
+                  'Grace time before detection',
+                  style: TextStyle(
+                    color: Colors.purple[400]
+                  ),
+                ),
+                subtitle: Text(
+                  '$_detectDelay seconds',
+                  style: TextStyle(
+                    color: Colors.purple[200]
+                  ),
+                ),
+                onTap: (){
+                  String title = 'Grace time before detection';
+                  double height = 170.0;
+                  showDialog(
                   context: context,
                   builder: (_) {
-                  return SettingsDialog(content: 'faq', height: height, title: title, action: button);
+                    return SettingsDialog(content: 'detect', height: height, title: title, action: button);
                   });
-              },
-            ),
-            Divider(
-              color: Colors.grey[400],
-            ),
-          ],
+                },
+              ),
+              Divider(
+                color: Colors.grey[400],
+              ),
+              Text(
+                'ALARM TONE',
+                style: textStyle,
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(
+                  'Choose alarm tone',
+                  style: TextStyle(
+                    color: Colors.purple[400]
+                  ),
+                ),
+                subtitle: Text(
+                  _alarmTone(),
+                  style: TextStyle(
+                    color: Colors.purple[200]
+                  ),
+                ),
+                onTap: (){
+                  String title = 'Choose alarm tone';
+                  double height = 130.0;
+                  showDialog(
+                  context: context,
+                  builder: (_) {
+                    return SettingsDialog(content: 'alarmTone', height: height, title: title, action: button);
+                  });
+                },
+              ),
+              Divider(
+                color: Colors.grey[400],
+              ),
+              Text(
+                'SECURITY',
+                style: textStyle,
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(
+                  'Change Password',
+                  style: TextStyle(
+                    color: Colors.purple[400]
+                  ),
+                ),
+                subtitle: Text(
+                  'Provide your email and change your password',
+                  style: TextStyle(
+                    color: Colors.purple[200]
+                  ),
+                ),
+                onTap: (){
+                  String title = 'Change Password';
+                  double height = 165.0;
+                  showDialog(
+                    context: context,
+                    builder: (_) {
+                      return SettingsDialog(content: 'forgetPassword', height: height, title: title, action: button);
+                    }
+                  );
+                },
+              ),
+              Divider(
+                color: Colors.grey[400],
+              ),
+              Text(
+                'OTHERS',
+                style:textStyle,
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(
+                  'Questions and Answers',
+                  style: TextStyle(
+                      color: Colors.purple[400]
+                  ),
+                ),
+                subtitle: Text(
+                  'FAQ',
+                  style: TextStyle(
+                    color: Colors.purple[200]                ),
+                ),
+                onTap: (){
+                  String title = 'Questions and Answers';
+                  double height = 450.0;
+                  showDialog(
+                    context: context,
+                    builder: (_) {
+                    return SettingsDialog(content: 'faq', height: height, title: title, action: button);
+                    });
+                },
+              ),
+              Divider(
+                color: Colors.grey[400],
+              ),
+            ],
+          ),
         ),
       ),
     );

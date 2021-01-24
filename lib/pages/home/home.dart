@@ -19,7 +19,6 @@ class PhoneTheft extends StatefulWidget {
 }
 
 class _PhoneTheftState extends State<PhoneTheft> {
-  AuthServices _auth = AuthServices();  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,20 +34,13 @@ class _PhoneTheftState extends State<PhoneTheft> {
             },
             icon: Icon(Icons.settings),
           ),
-           IconButton(
-            tooltip: 'Settings',
-            onPressed: () {
-              _auth.signOut();
-            },
-            icon: Icon(Icons.power_settings_new),
-          ),
         ],
       ),
 
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('images/bg3.png'),
+            image: AssetImage('assets/images/bg5.png'),
             fit: BoxFit.cover
           )
         ),
