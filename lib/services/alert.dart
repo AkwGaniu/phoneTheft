@@ -274,23 +274,6 @@ class _SettingsDialogState extends State<SettingsDialog> {
               color: Colors.grey[400],
             ),
             Text(
-              'Will the alarm ring if device is silence?',
-              style: textStyle,
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(vertical:10.0, horizontal: 15.0),
-              child: Text(
-                'Yes, the alarm will always ring in full volume.',
-                style: TextStyle(
-                color: Colors.purple[200],
-                  fontSize: 12.0
-                )
-              ),
-            ),
-            Divider(
-              color: Colors.grey[400],
-            ),
-            Text(
               'How does motion detection mode work?',
               style: textStyle,
             ),
@@ -304,23 +287,23 @@ class _SettingsDialogState extends State<SettingsDialog> {
                   )
               ),
             ),
-            Divider(
-              color: Colors.grey[400],
-            ),
-            Text(
-              'How does charging detection mode work?',
-              style: textStyle,
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(vertical:10.0, horizontal: 15.0),
-              child: Text(
-                  'If the device is unplugged from power source, then theft detection process will be triggered.',
-                  style: TextStyle(
-                    color: Colors.purple[200],
-                    fontSize: 12.0
-                  )
-              ),
-            ),
+            // Divider(
+            //   color: Colors.grey[400],
+            // ),
+            // Text(
+            //   'How does charging detection mode work?',
+            //   style: textStyle,
+            // ),
+            // Container(
+            //   padding: EdgeInsets.symmetric(vertical:10.0, horizontal: 15.0),
+            //   child: Text(
+            //       'If the device is unplugged from power source, then theft detection process will be triggered.',
+            //       style: TextStyle(
+            //         color: Colors.purple[200],
+            //         fontSize: 12.0
+            //       )
+            //   ),
+            // ),
             Divider(
               color: Colors.grey[400],
             ),
@@ -418,9 +401,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
           height: widget.height,
           child: (widget.content == 'alarm')
             ? alarmDelayPopUp
-            : (widget.content == 'forgetPassword' )
+            : (widget.content == 'forgetPassword')
             ? forgetPassword
-            : (widget.content == 'faq' )
+            : (widget.content == 'faq')
             ? faqPopUp
             : (widget.content == 'alarmTone')
             ? alarmTonePopUp

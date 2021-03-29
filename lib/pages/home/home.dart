@@ -188,59 +188,58 @@ class _SnackBarWidgetState extends State<SnackBarWidget> {
             height: 20.0,
             color: Colors.grey[400],
           ),
-          Text(
-            'CHARGING',
-            style: textStyle,
-          ),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            onTap: () {
-              _batterySubscription = _battery.onBatteryStateChanged.listen((BatteryState state) {
-                setState(() {
-                  _batteryState = state;
-                });
-              });
-              if (_batteryState == BatteryState.discharging) {
-                String msg = 'Please connect phone to power source';
-                final snackBar = returnSnackBar(msg);
-                Scaffold.of(context).showSnackBar(snackBar);
-                if (_batterySubscription != null) {
-                  _batterySubscription.cancel();
-                }
-              } else if (_batteryState == BatteryState.charging) {
-                int graceTime = user.detectDelay;
-                showDialog(
-                  context: context,
-                  builder: (_) {
-                    return MyDialog();
-                  }
-                );
-                _detectectChargingMode(graceTime);
-              }
-            },
-            leading: Icon(
-              Icons.phone_android,
-              color: Colors.purple[500],
-              size: 50.0,
-            ),
-            title: Text(
-              'Charging Detection Mode',
-              style: TextStyle(
-                  color: Colors.purple[400]
-              ),
-            ),
-            subtitle: Text(
-              chargingWatchOn ? 'Charging Detection Mode Activated' : 'Raise alarm when device is unplugged',
-              style: TextStyle(
-                color: Colors.purple[200],
-              ),
-            ),
-          ),
-          Divider(
-            height: 20.0,
-            color: Colors.grey[400],
-          ),
-
+          // Text(
+          //   'CHARGING',
+          //   style: textStyle,
+          // ),
+          // ListTile(
+          //   contentPadding: EdgeInsets.zero,
+          //   onTap: () {
+          //     _batterySubscription = _battery.onBatteryStateChanged.listen((BatteryState state) {
+          //       setState(() {
+          //         _batteryState = state;
+          //       });
+          //     });
+          //     if (_batteryState == BatteryState.discharging) {
+          //       String msg = 'Please connect phone to power source';
+          //       final snackBar = returnSnackBar(msg);
+          //       Scaffold.of(context).showSnackBar(snackBar);
+          //       if (_batterySubscription != null) {
+          //         _batterySubscription.cancel();
+          //       }
+          //     } else if (_batteryState == BatteryState.charging) {
+          //       int graceTime = user.detectDelay;
+          //       showDialog(
+          //         context: context,
+          //         builder: (_) {
+          //           return MyDialog();
+          //         }
+          //       );
+          //       _detectectChargingMode(graceTime);
+          //     }
+          //   },
+          //   leading: Icon(
+          //     Icons.phone_android,
+          //     color: Colors.purple[500],
+          //     size: 50.0,
+          //   ),
+          //   title: Text(
+          //     'Charging Detection Mode',
+          //     style: TextStyle(
+          //         color: Colors.purple[400]
+          //     ),
+          //   ),
+          //   subtitle: Text(
+          //     chargingWatchOn ? 'Charging Detection Mode Activated' : 'Raise alarm when device is unplugged',
+          //     style: TextStyle(
+          //       color: Colors.purple[200],
+          //     ),
+          //   ),
+          // ),
+          // Divider(
+          //   height: 20.0,
+          //   color: Colors.grey[400],
+          // ),
         ],
       ),
     );

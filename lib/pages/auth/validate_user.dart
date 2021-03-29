@@ -26,11 +26,11 @@ class _ValidateUserState extends State<ValidateUser> {
   String _attachmentPath;
   bool _theftDetected = false;
   // ignore: non_constant_identifier_names
-  String APPLICATION_ID = '600F62F2-FFC0-2E76-FFBB-1F6FCA6FEF00';
+  String APPLICATION_ID = '6057CDC0-A0A7-6D6A-FF0D-C9A7A41A1500';
   // ignore: non_constant_identifier_names
-  String ANDROID_API_KEY = '71A514FF-7705-43EE-8C29-F4D7B6DFF019';
+  String ANDROID_API_KEY = 'F7194269-72D5-407D-B3FE-8E473A65FDC5';
   // ignore: non_constant_identifier_names
-  String IOS_API_KEY = '659761EA-B660-4F56-AE7D-3E153E2D50E7';
+  String IOS_API_KEY = '0902FC17-4829-4E16-8AFE-FB9DAC9C655B';
   
   Future<void> _initializeCamera() async {
     final cameras = await availableCameras();
@@ -48,7 +48,6 @@ class _ValidateUserState extends State<ValidateUser> {
   Future<File> _snapPicture() async {
     try {
       setState(() { _theftDetected = true; });
-      print('dddfdfdfd1');
       XFile imagePath = await _controller.takePicture();
       return File(imagePath.path);
     } catch (e) {
@@ -61,12 +60,28 @@ class _ValidateUserState extends State<ValidateUser> {
     Future<String> file = Backendless.files.upload(imageFilePath, "/images");
     return file;
   }
+    void _catchTheThief  (email) async {
+    File path = await _snapPicture();
+    print({'dfdfdjkjkfdkfdkfdf': path});
+    setState(() {
+      _theftDetected = false;
+      imageFilePath = path;
+    });
+    String uploadedFilePath = await _uploadImage();
+    setState(() {
+      _attachmentPath = uploadedFilePath;
+    });
+    _sendMail(email);
+  }
 
   @override
   void initState() {
     super.initState();
     _initializeCamera();
     Backendless.initApp(APPLICATION_ID, ANDROID_API_KEY, IOS_API_KEY);
+    String email = currentuser.email;
+    print({"jbbnbbj":isCameraReady});
+    _catchTheThief(email);
   }
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
@@ -76,6 +91,7 @@ class _ValidateUserState extends State<ValidateUser> {
       : null;
     }
   }
+
   void dispose() {
     // ignore: todo
     // TODO: dispose
@@ -85,9 +101,6 @@ class _ValidateUserState extends State<ValidateUser> {
 
   void _sendMail(String userEmail) async {
     List<String> recipients = [userEmail];
-    // String  _path = _attachmentPath.substring(_attachmentPath.indexOf('images'));
-    // List<String> attachments = ['./'+_path];
-    // print('something' + _path );
     String mailString = """
                     <div style="width: 100%; background-color:#f5f4f4; padding:10px 0px">
                       <div style="width: 80%; border-radius:10px; margin:10px auto; background-color:#fff; padding:10px 20px">
@@ -103,22 +116,6 @@ class _ValidateUserState extends State<ValidateUser> {
                       </div>
                     </div>
                   """;
-    // BodyParts mailBody = BodyParts('', """
-    //                 <div style="width: 100%; background-color:#f5f4f4; padding:10px 0px">
-    //                   <div style="width: 80%; border-radius:10px; margin:10px auto; background-color:#fff; padding:10px 20px">
-    //                     <h3 style="font-size:20px">Hello, </h3>\n
-    //                     <p style="color:#00303f; font-size:20px">\t
-    //                       We noticed a theft attempt on your mobile device just now.
-    //                       Find the picture of the suspect below
-    //                     </p>
-    //                     <div style="width: 90%; padding: 10px 20px">
-    //                       <img src="$_attachmentPath" style="width:100%; height: 100%" alt="Suspect picture"/>
-    //                     </div>
-    //                     <p style="color:#00303f; font-size:20px; margin-top:100px">Thanks.</p>
-    //                   </div>
-    //                 </div>
-    //               """);
-    // Backendless.messaging.sendEmail("Theft Alert", mailBody, recipients, attachments).then((response) {
     Backendless.messaging.sendHTMLEmail("Theft Alert", mailString, recipients).then((response) {
       print({"Email has been sent": response});
     }).catchError((err) => {
@@ -144,30 +141,32 @@ class _ValidateUserState extends State<ValidateUser> {
     return _loading ? Spin() : Scaffold(
       backgroundColor: Colors.purple[100],
       body: _theftDetected ? Column(
-            children: [
-            FutureBuilder<void>(
-              future: _initializeControllerFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  // If the Future is complete, display the preview.
-                  return Transform.scale(
-                          scale: _controller.value.aspectRatio,
-                          child: Center(
-                            child: AspectRatio(
-                              aspectRatio: _controller.value.aspectRatio,
-                              child: CameraPreview(_controller), //cameraPreview
-                            ),
-                          ));
-                } else {
-                  return Center(
-                  child: CircularProgressIndicator()); // Otherwise, display a loading indicator.
-                }
-              },
-            )
-            ],
-          )
-           : 
-          Container(
+        children: [
+        FutureBuilder<void>(
+          future: _initializeControllerFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              // If the Future is complete, display the preview.
+              return Transform.scale(
+                scale: _controller.value.aspectRatio,
+                child: Center(
+                  child: AspectRatio(
+                    aspectRatio: _controller.value.aspectRatio,
+                    child: CameraPreview(_controller), //cameraPreview
+                  ),
+                )
+              );
+            } else {
+              return Center(
+                child: CircularProgressIndicator()
+              ); // Otherwise, display a loading indicator.
+            }
+          },
+        )
+        ],
+      )
+      : 
+      Container(
         padding: EdgeInsets.symmetric(vertical:20.0, horizontal: 20.0),
         child: Form(
           key: _formKey,
@@ -256,6 +255,7 @@ class _ValidateUserState extends State<ValidateUser> {
                           _theftDetected = false;
                           imageFilePath = path;
                         });
+                        
                         String uploadedFilePath = await _uploadImage();
                         setState(() {
                           _attachmentPath = uploadedFilePath;

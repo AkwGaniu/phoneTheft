@@ -25,7 +25,7 @@ class _WrapperState extends State<Wrapper> {
           chargingWatchOn = false;
         });
       }
-      print({"uid": user.uid, "email": user.email});
+      // print({"uid": user.uid, "email": user.email});
     }
     if (user == null) {
       return Authenticate();
