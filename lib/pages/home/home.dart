@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:camera/camera.dart';
 // import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audio_cache.dart';
@@ -19,6 +20,28 @@ class PhoneTheft extends StatefulWidget {
 }
 
 class _PhoneTheftState extends State<PhoneTheft> {
+  CameraController _controller;
+    Future<void> _initializeCamera() async {
+    final cameras = await availableCameras();
+    final firstCamera = cameras.last;
+    _controller = CameraController(firstCamera, ResolutionPreset.high);
+    _controller.initialize();
+    if (!mounted) {
+      return;
+    }
+    // print("yoooooo");
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _initializeCamera();
+
+    Timer(Duration(seconds: 15),() {
+      _controller?.dispose();
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,10 +82,9 @@ class SnackBarWidget extends StatefulWidget {
 class _SnackBarWidgetState extends State<SnackBarWidget> {
   bool correctPass = false;
   final AuthServices _auth = AuthServices();
-  StreamSubscription<BatteryState> _batterySubscription;
-  BatteryState _batteryState;
-    var _battery = Battery();
-
+  // StreamSubscription<BatteryState> _batterySubscription;
+  // BatteryState _batteryState;
+  //   var _battery = Battery();
   returnSnackBar(msg) {
     final snackBar = SnackBar(
       content: Text(
@@ -81,11 +103,11 @@ class _SnackBarWidgetState extends State<SnackBarWidget> {
   @override
   void initState() {
     super.initState();
-    _batterySubscription = _battery.onBatteryStateChanged.listen((BatteryState state) {
-      setState(() {
-        _batteryState = state;
-      });
-    });
+    // _batterySubscription = _battery.onBatteryStateChanged.listen((BatteryState state) {
+    //   setState(() {
+    //     _batteryState = state;
+    //   });
+    // });
   }
   void dispose() {
     super.dispose();
@@ -96,12 +118,14 @@ class _SnackBarWidgetState extends State<SnackBarWidget> {
       var loop = player.loop(
         (user.alarmTone == 1) ? 'audio/Police_Sirene.mp3' : 'audio/ambulance.mp3',
         stayAwake: true,
-        volume: 1.0
+        volume: 1.0,
+        // mode: PlayerMode.MEDIA_PLAYER
       );
       loop.then((currentPlayer){
         currentuser.currentAudioLoop = currentPlayer;
       });
     }
+
     // DETECT MOVEMENT AND TRIGGER ALLARM
     void _detectMovement(graceTime) async {
       Future.delayed(Duration(seconds: graceTime * 2), () async {
@@ -124,19 +148,19 @@ class _SnackBarWidgetState extends State<SnackBarWidget> {
     });
   }
 
-  void _detectectChargingMode (graceTime) async {
-    Future.delayed(Duration(seconds: graceTime * 2), () async {
-      setState(() { chargingWatchOn = true; });
-      if (_batteryState != BatteryState.charging) {
-        print({'hi': _batteryState});
-        if (_batterySubscription != null) {
-          _batterySubscription.cancel();
-        }
-        _playAlarm();
-        await _auth.signOut();
-      }
-    });
-  }
+  // void _detectectChargingMode (graceTime) async {
+  //   Future.delayed(Duration(seconds: graceTime * 2), () async {
+  //     setState(() { chargingWatchOn = true; });
+  //     if (_batteryState != BatteryState.charging) {
+  //       print({'hi': _batteryState});
+  //       if (_batterySubscription != null) {
+  //         _batterySubscription.cancel();
+  //       }
+  //       _playAlarm();
+  //       await _auth.signOut();
+  //     }
+  //   });
+  // }
 
   TextStyle textStyle = TextStyle(
     fontSize: 20.0,

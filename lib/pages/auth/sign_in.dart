@@ -24,7 +24,7 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return loading ? Spin() : Scaffold(
-      backgroundColor: Colors.purple[100],
+      backgroundColor: Colors.purple[50],
       appBar: AppBar(
         backgroundColor: Colors.purple[400],
         title: Text('Sign In to Phone Police'),

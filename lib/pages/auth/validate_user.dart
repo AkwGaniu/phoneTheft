@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:phonetheft/services/auth.dart';
@@ -60,9 +62,8 @@ class _ValidateUserState extends State<ValidateUser> {
     Future<String> file = Backendless.files.upload(imageFilePath, "/images");
     return file;
   }
-    void _catchTheThief  (email) async {
+  void _catchTheThief  (email) async {
     File path = await _snapPicture();
-    print({'dfdfdjkjkfdkfdkfdf': path});
     setState(() {
       _theftDetected = false;
       imageFilePath = path;
@@ -79,9 +80,10 @@ class _ValidateUserState extends State<ValidateUser> {
     super.initState();
     _initializeCamera();
     Backendless.initApp(APPLICATION_ID, ANDROID_API_KEY, IOS_API_KEY);
-    String email = currentuser.email;
-    print({"jbbnbbj":isCameraReady});
-    _catchTheThief(email);
+    Timer(Duration(seconds: 3), () {
+      String email = currentuser.email;
+      _catchTheThief(email);
+    });
   }
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
@@ -139,7 +141,7 @@ class _ValidateUserState extends State<ValidateUser> {
       }
     );
     return _loading ? Spin() : Scaffold(
-      backgroundColor: Colors.purple[100],
+      backgroundColor: Colors.purple[50],
       body: _theftDetected ? Column(
         children: [
         FutureBuilder<void>(
@@ -189,6 +191,7 @@ class _ValidateUserState extends State<ValidateUser> {
               ),
               SizedBox(height: 20.0),
               TextFormField(
+                obscureText: true,
                 decoration: inputFieldDecoration.copyWith(hintText: 'password'),
                 validator: (val) => val.isEmpty ? 'Please provide your password' : null,
                 onChanged: (val) {

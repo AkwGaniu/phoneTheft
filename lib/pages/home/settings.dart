@@ -217,7 +217,7 @@ class _SettingsState extends State<Settings> {
                 ),
                 onTap: (){
                   String title = 'Questions and Answers';
-                  double height = 250.0;
+                  double height = 350.0;
                   showDialog(
                     context: context,
                     builder: (_) {

@@ -5,7 +5,7 @@ class Spin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.purple[100],
+      color: Colors.purple[50],
       child: Center(
         child: SpinKitRing(
           color: Colors.white,

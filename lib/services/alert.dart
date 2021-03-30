@@ -287,23 +287,6 @@ class _SettingsDialogState extends State<SettingsDialog> {
                   )
               ),
             ),
-            // Divider(
-            //   color: Colors.grey[400],
-            // ),
-            // Text(
-            //   'How does charging detection mode work?',
-            //   style: textStyle,
-            // ),
-            // Container(
-            //   padding: EdgeInsets.symmetric(vertical:10.0, horizontal: 15.0),
-            //   child: Text(
-            //       'If the device is unplugged from power source, then theft detection process will be triggered.',
-            //       style: TextStyle(
-            //         color: Colors.purple[200],
-            //         fontSize: 12.0
-            //       )
-            //   ),
-            // ),
             Divider(
               color: Colors.grey[400],
             ),
@@ -324,6 +307,40 @@ class _SettingsDialogState extends State<SettingsDialog> {
             Divider(
               color: Colors.grey[400],
             ),
+            Text(
+              'How do I know the suspect?',
+              style: textStyle,
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(vertical:10.0, horizontal: 15.0),
+              child: Text(
+                  'Once the system identifies a suspect, a mail with the suspect\'s picture will be sent to your registered email address.',
+                  style: TextStyle(
+                    color: Colors.purple[200],
+                    fontSize: 12.0
+                  )
+              ),
+            ),
+            Divider(
+              color: Colors.grey[400],
+            ),
+            // Text(
+            //   'How does charging detection mode work?',
+            //   style: textStyle,
+            // ),
+            // Container(
+            //   padding: EdgeInsets.symmetric(vertical:10.0, horizontal: 15.0),
+            //   child: Text(
+            //       'If the device is unplugged from power source, then theft detection process will be triggered.',
+            //       style: TextStyle(
+            //         color: Colors.purple[200],
+            //         fontSize: 12.0
+            //       )
+            //   ),
+            // ),
+            // Divider(
+            //   color: Colors.grey[400],
+            // ),
           ],
         );
 

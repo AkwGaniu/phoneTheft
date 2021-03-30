@@ -13,7 +13,7 @@
     <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
     <application
         android:name=".Application"
-        android:label="phonetheft"
+        android:label="Phone Police"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
