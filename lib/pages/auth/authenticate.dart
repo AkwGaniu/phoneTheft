@@ -1,6 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:phonetheft/pages/auth/register.dart';
 import 'package:phonetheft/pages/auth/sign_in.dart';
-import 'package:flutter/material.dart';
 import 'package:phonetheft/pages/auth/validate_user.dart';
 import 'package:phonetheft/pages/home/home.dart';
 import 'package:phonetheft/services/models/user.dart';

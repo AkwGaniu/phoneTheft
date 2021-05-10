@@ -9,7 +9,7 @@ import 'package:phonetheft/services/models/user.dart';
 import 'package:phonetheft/shared/userSettings.dart';
 import 'package:phonetheft/services/alert.dart';
 import 'package:sensors/sensors.dart';
-import 'package:battery/battery.dart';
+// import 'package:battery/battery.dart';
 
 
 AudioCache player = AudioCache();
@@ -63,7 +63,7 @@ class _PhoneTheftState extends State<PhoneTheft> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/bg5.png'),
+            image: AssetImage('assets/images/bg6.png'),
             fit: BoxFit.cover
           )
         ),

@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
 import 'package:phonetheft/shared/constant.dart';
 import 'package:phonetheft/shared/spinner.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
 import 'package:phonetheft/services/auth.dart';
+import 'package:flutter/material.dart';
 
 class Register extends StatefulWidget {
   final Function toggleView;
@@ -18,9 +19,11 @@ class _RegisterState extends State<Register> {
   final _formKey = GlobalKey<FormState>();
   String email = '';
   String password = '';
+  String comfirmPassword = '';
   String username = '';
   String _error = '';
   bool loading  = false;
+  
   @override
   Widget build(BuildContext context) {
     return loading ? Spin() : Scaffold(
@@ -53,15 +56,6 @@ class _RegisterState extends State<Register> {
                   fontSize: 14.0,
                 ),
               ),
-              // SizedBox(height: 20.0),
-              // TextFormField(
-              //   obscureText: true,
-              //   decoration: inputFieldDecoration.copyWith(hintText: 'Username'),
-              //   validator: (val) => val.isEmpty ? 'Please give yourself a username' : null,
-              //   onChanged: (val) {
-              //     setState(() { username = val.trim(); });
-              //   },
-              // ),
               SizedBox(height: 20.0),
               TextFormField(
                 decoration: inputFieldDecoration.copyWith(hintText: 'Email'),
@@ -77,6 +71,15 @@ class _RegisterState extends State<Register> {
                 validator: (val) => val.length < 6 ? 'Provide a password of 6 chars above' : null,
                 onChanged: (val) {
                   setState(() { password = val.trim(); });
+                },
+              ),
+                            SizedBox(height: 20.0),
+              TextFormField(
+                obscureText: true,
+                decoration: inputFieldDecoration.copyWith(hintText: 'Comfirm Password'),
+                validator: (val) => val != password ? 'Password fields does not match' : null,
+                onChanged: (val) {
+                  setState(() { comfirmPassword = val.trim(); });
                 },
               ),
               SizedBox(height: 20.0),
