@@ -28,11 +28,11 @@ class _ValidateUserState extends State<ValidateUser> {
   String _attachmentPath;
   bool _theftDetected = false;
   // ignore: non_constant_identifier_names
-  String APPLICATION_ID = '6057CDC0-A0A7-6D6A-FF0D-C9A7A41A1500';
+  String APPLICATION_ID = '4E566142-9133-A84D-FF69-857B6DE47600';
   // ignore: non_constant_identifier_names
-  String ANDROID_API_KEY = 'F7194269-72D5-407D-B3FE-8E473A65FDC5';
+  String ANDROID_API_KEY = 'B3110816-0107-4207-A342-2C04A8EA32D0';
   // ignore: non_constant_identifier_names
-  String IOS_API_KEY = '0902FC17-4829-4E16-8AFE-FB9DAC9C655B';
+  String IOS_API_KEY = 'C45D0911-5DF7-4C3D-A50B-187AA96AB264';
   
   Future<void> _initializeCamera() async {
     final cameras = await availableCameras();
@@ -81,7 +81,7 @@ class _ValidateUserState extends State<ValidateUser> {
     _initializeCamera();
     Backendless.initApp(APPLICATION_ID, ANDROID_API_KEY, IOS_API_KEY);
     Timer(Duration(seconds: 3), () {
-      String email = currentuser.email;
+      var email = currentuser.email;
       _catchTheThief(email);
     });
   }
@@ -118,6 +118,7 @@ class _ValidateUserState extends State<ValidateUser> {
                       </div>
                     </div>
                   """;
+
     Backendless.messaging.sendHTMLEmail("Theft Alert", mailString, recipients).then((response) {
       print({"Email has been sent": response});
     }).catchError((err) => {
@@ -127,6 +128,7 @@ class _ValidateUserState extends State<ValidateUser> {
     
   @override
   Widget build(BuildContext context) {
+    // ignore: deprecated_member_use
     FlatButton button = FlatButton(
       padding: EdgeInsets.zero,
       child: Text(
@@ -202,6 +204,7 @@ class _ValidateUserState extends State<ValidateUser> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                    // ignore: deprecated_member_use
                     FlatButton.icon(
                       onPressed: (){
                         String title = 'Forgot Password';
@@ -229,6 +232,7 @@ class _ValidateUserState extends State<ValidateUser> {
                 )
               ),
               SizedBox(height: 30.0),
+              // ignore: deprecated_member_use
               FlatButton(
                 color: Colors.purple[600],
                 child: Text(
