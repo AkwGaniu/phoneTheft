@@ -28,11 +28,11 @@ class _ValidateUserState extends State<ValidateUser> {
   String _attachmentPath;
   bool _theftDetected = false;
   // ignore: non_constant_identifier_names
-  String APPLICATION_ID = '4E566142-9133-A84D-FF69-857B6DE47600';
+  String APPLICATION_ID = '19273F7C-D78E-1906-FF78-D16C98763E00';
   // ignore: non_constant_identifier_names
-  String ANDROID_API_KEY = 'B3110816-0107-4207-A342-2C04A8EA32D0';
+  String ANDROID_API_KEY = '875C1E9E-FCB2-4951-A9B0-2DC831D4CEBC';
   // ignore: non_constant_identifier_names
-  String IOS_API_KEY = 'C45D0911-5DF7-4C3D-A50B-187AA96AB264';
+  String IOS_API_KEY = '3A380C73-1092-4402-A0A4-EDB0742586AD';
   
   Future<void> _initializeCamera() async {
     final cameras = await availableCameras();
